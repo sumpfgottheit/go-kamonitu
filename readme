@@ -1,0 +1,4 @@
+- setup.Setup()
+    - Read kamonitu_ini_file
+        - Fill AppConfig
+        - Fill CheckDefinitionDefaults
