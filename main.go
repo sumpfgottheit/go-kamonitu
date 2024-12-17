@@ -209,10 +209,9 @@ const (
 
 var validationRegexCacheMap map[string]*regexp.Regexp
 
-// Verwendet Struct Tag "validation"
-// - writeableDirectory
-// - readableDirectory
-// - gt=a,lt=b
+// ValidateStruct Verwendet Struct Tag "validation"
+// - strings: readableDirectory, writeableDirectory
+// - int: within(lower, upper)
 func ValidateStruct(input any) error {
 
 	if len(validationRegexCacheMap) == 0 {
@@ -250,6 +249,8 @@ func ValidateStruct(input any) error {
 				if v < int64(lower) || v > int64(upper) {
 					return fmt.Errorf("field %v muss innerhalb on %v und %v liegen, ist aber %v", field.Name, lower, upper, v)
 				}
+			} else {
+				return fmt.Errorf("validation rule %v not supported for field %v", validationRules, field.Name)
 			}
 		case reflect.String:
 			v := value.String()
@@ -270,8 +271,7 @@ func ValidateStruct(input any) error {
 					return fmt.Errorf("field %v must be a readable directory, but %v is not readable", field.Name, v)
 				}
 				dir.Close()
-			}
-			if validationRules == "writeableDirectory" {
+			} else if validationRules == "writeableDirectory" {
 				info, err := os.Stat(v)
 				if err != nil || !info.IsDir() {
 					return fmt.Errorf("field %v must be a writable directory, but %v is not accessible or does not exist", field.Name, v)
@@ -287,6 +287,8 @@ func ValidateStruct(input any) error {
 				if err != nil {
 					return fmt.Errorf("field %v must be a writable directory, but the temporary file in %v could not be removed", field.Name, v)
 				}
+			} else {
+				return fmt.Errorf("validation rule %v not supported for field %v", validationRules, field.Name)
 			}
 		}
 	}
