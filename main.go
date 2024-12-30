@@ -51,14 +51,39 @@ func main() {
 	rootCmd := &cobra.Command{
 		Use:   "kamonitu",
 		Short: "Kamonitu is a configuration validation tool.",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			var err error
+			if os.Getenv("KAMONITU_DEBUG") == "1" {
+				debug = true
+			}
+			if configFile == DefaultConfigFilePath && os.Getenv(EnvVarConfigFilePath) != "" {
+				configFile = os.Getenv(EnvVarConfigFilePath)
+			}
+
 			if debug {
-				setupLogging(slog.LevelDebug, "/var/log/kamonitu/")
+				setupLogging(slog.LevelDebug, "")
 			} else {
 				setupLogging(slog.LevelInfo, "/var/log/kamonitu/")
 			}
+
+			appConfig, err = makeAppConfig(configFile)
+			if err != nil {
+				return err
+			}
+			slog.Debug("root.PersistentPreRunE successfull")
+			return nil
 		},
 	}
+
+	/*
+		Globale Flags - Handling der Environment Variablen in rootCmd.PersistentPreRunE
+	*/
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode (can also be set via KAMONITU_DEBUG environment variable)")
+	rootCmd.PersistentFlags().StringVarP(&configFile, "config-file", "f", DefaultConfigFilePath, "Path to config file (default can also be set via KAMONITU_CONFIG_FILE environment variable)")
+
+	/*
+		Subcommands
+	*/
 
 	/* validate-config */
 	validateConfigCmd := &cobra.Command{
@@ -69,30 +94,6 @@ func main() {
 		},
 	}
 	rootCmd.AddCommand(validateConfigCmd)
-
-	/* Globale Flags */
-
-	/* --debug */
-	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode (can also be set via KAMONITU_DEBUG environment variable)")
-	if os.Getenv("KAMONITU_DEBUG") == "1" {
-		debug = true
-	}
-
-	/* Configfile. Parameter, KAMONITU_CONFIG_FILE oder /etc/kamonitu/kamonitu.ini */
-	rootCmd.PersistentFlags().StringVarP(&configFile, "config-file", "f", DefaultConfigFilePath, "Path to config file (default can also be set via KAMONITU_CONFIG_FILE environment variable)")
-	if configFile == DefaultConfigFilePath && os.Getenv(EnvVarConfigFilePath) != "" {
-		configFile = os.Getenv(EnvVarConfigFilePath)
-	}
-	appConfig, err := makeAppConfig(configFile)
-	if err != nil {
-
-		fmt.Printf("Fehler beim Einlesen des Configfiles %v: %v\n", configFile, err)
-		fmt.Print("\033[31mFailed\033[0m\n") // Prints "Failed" in red
-		slog.Error("Failed to make app config.", "error", err)
-		os.Exit(1)
-	}
-
-	/* Configfile ist lesbar und valide */
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.Error("Command execution failed.", "error", err)

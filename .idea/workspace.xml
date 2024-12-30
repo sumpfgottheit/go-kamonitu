@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/go-kamonitu.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/go-kamonitu.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="soviel">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +36,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
-    "Go Build.go build go-kamonitu.executor": "Run",
+    "Go Build.go build go-kamonitu.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
@@ -68,7 +61,7 @@
     <configuration name="go build go-kamonitu" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
-      <parameters value="validate-config" />
+      <parameters value="validate-config " />
       <envs>
         <env name="KAMONITU_DEBUG" value="1" />
         <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
@@ -90,6 +83,10 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="soviel" />
+    <option name="LAST_COMMIT_MESSAGE" value="soviel" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
