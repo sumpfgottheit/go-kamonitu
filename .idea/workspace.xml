@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="soviel">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Korrektes Erkennen von Parametern und Env-Variablen">
+      <change afterPath="$PROJECT_DIR$/logging.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,7 +55,7 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Console Colors"
+    "settings.editor.selected.configurable": "preferences.sourceCode"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -86,9 +92,21 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="soviel" />
-    <option name="LAST_COMMIT_MESSAGE" value="soviel" />
+    <MESSAGE value="Korrektes Erkennen von Parametern und Env-Variablen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Korrektes Erkennen von Parametern und Env-Variablen" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/inifile.go</url>
+          <line>64</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

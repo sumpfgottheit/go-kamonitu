@@ -34,8 +34,7 @@ func makeAppConfig(path string) (*AppConfig, error) {
 
 	appconfig, err := ParseIniFileToStruct(path, appConfigDefaults)
 	if err != nil {
-		slog.Error(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 	slog.Info("Parsed ini file.", "config", appconfig)
 

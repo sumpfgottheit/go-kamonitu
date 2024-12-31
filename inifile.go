@@ -32,11 +32,6 @@ func ParseIniFileToStruct[T AppConfig | CheckDefinitionDefaults | CheckDefinitio
 		iniKey := field.Tag.Get("db")    // The key in the ini file
 		required := field.Tag.Get("ini") // Check if it's marked as "required"
 
-		// Skip if no 'db' tag present
-		if iniKey == "" {
-			continue
-		}
-
 		// Validate required keys
 		if required == "required" && !section.HasKey(iniKey) {
 			return nil, fmt.Errorf("%v: missing required key: %v", filePath, iniKey)
@@ -66,6 +61,7 @@ func ParseIniFileToStruct[T AppConfig | CheckDefinitionDefaults | CheckDefinitio
 			val.Field(i).Set(reflect.ValueOf(defaultVal))
 		}
 	}
+
 	return configPointer, nil
 }
 

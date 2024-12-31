@@ -34,6 +34,8 @@ type CheckDefinitionFileStore struct {
 	CheckDefinitions        map[string]CheckDefinition
 }
 
+// LoadDefinitionsFilesMtimeMap scans the directory for .ini files, retrieves their modification times, and updates the mtimes map.
+// Returns an error if directory reading or file stat operation fails.
 func (c *CheckDefinitionFileStore) LoadDefinitionsFilesMtimeMap() error {
 	slog.Info("Loading check files with mtimes from disk.", "directory", c.directory)
 	files, err := os.ReadDir(c.directory)
@@ -59,7 +61,10 @@ func (c *CheckDefinitionFileStore) LoadDefinitionsFilesMtimeMap() error {
 	return nil
 }
 
+// LoadCheckDefinitionsFromDisk loads check definitions from .ini files in the directory and parses their contents into structs.
+// Fills the slice checkDefinitions
 func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
+	slog.Info("Loading check definitions from disk.", "directory", c.directory)
 	err := c.LoadDefinitionsFilesMtimeMap()
 	if err != nil {
 		return err
@@ -74,9 +79,13 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 			DefinitionFileMtime:     mtime,
 			CheckDefinitionDefaults: c.checkDefinitionDefaults,
 		}
-		checkDefinitionContent, err := ParseIniFileToStruct(filePath, ck)
-		if err != nil {
-			return err
+		checkDefinitionContent, e := ParseIniFileToStruct(filePath, ck)
+		if e != nil {
+			return e
+		}
+		e = ValidateStruct(checkDefinitionContent)
+		if e != nil {
+			return e
 		}
 		slog.Info("Parsed ini file.", "file", filePath, "content", checkDefinitionContent)
 		c.CheckDefinitions[fileName] = *checkDefinitionContent

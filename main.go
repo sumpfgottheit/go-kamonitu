@@ -4,54 +4,24 @@ package main
 
 import (
 	"fmt"
-	"github.com/lmittmann/tint"
 	"github.com/spf13/cobra"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"log/slog"
 	"os"
-	"time"
 )
-
-func setupLogging(loglevel slog.Level, logDir string) {
-	if logDir == "" {
-		w := os.Stderr
-		slog.SetDefault(slog.New(
-			tint.NewHandler(w, &tint.Options{
-				AddSource:  true,
-				Level:      loglevel,
-				TimeFormat: time.RFC3339,
-			}),
-		))
-	} else {
-		w := &lumberjack.Logger{
-			Filename:   logDir + "kamonitu.log",
-			MaxSize:    10, // megabytes
-			MaxBackups: 5,
-			MaxAge:     30,   // days
-			Compress:   true, // disabled by default
-		}
-		slog.SetDefault(slog.New(
-			tint.NewHandler(w, &tint.Options{
-				AddSource:  false,
-				Level:      loglevel,
-				TimeFormat: time.RFC3339,
-				NoColor:    true,
-			}),
-		))
-	}
-	slog.Info("Initialized Logging.", "Level", loglevel.String())
-
-}
 
 func main() {
 	var debug bool
 	var configFile string
 	var appConfig *AppConfig
 
+	// RootCmd setups logging and reads and validates the AppConfig file and sets the variable appConfig
 	rootCmd := &cobra.Command{
 		Use:   "kamonitu",
 		Short: "Kamonitu is a configuration validation tool.",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if cmd.Use == "completion" {
+				return nil
+			}
 			var err error
 			if os.Getenv("KAMONITU_DEBUG") == "1" {
 				debug = true
