@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Korrektes Erkennen von Parametern und Env-Variablen">
-      <change afterPath="$PROJECT_DIR$/logging.go" afterDir="false" />
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Composed Structs werden nich korrekt verarbeitet">
+      <change afterPath="$PROJECT_DIR$/inifile_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
@@ -42,7 +37,14 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
-    "Go Build.go build go-kamonitu.executor": "Debug",
+    "Go Build.go build go-kamonitu.executor": "Run",
+    "Go Build.validate-config.executor": "Run",
+    "Go Build.wip.executor": "Run",
+    "Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu.executor": "Run",
+    "Go Test.TestReadIniFile/double_equals_sign in go-kamonitu.executor": "Run",
+    "Go Test.TestReadIniFile/empty_ini_file in go-kamonitu.executor": "Run",
+    "Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu.executor": "Run",
+    "Go Test.inifile_test.go.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
@@ -63,8 +65,8 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="go build go-kamonitu" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.go test go-kamonitu">
+    <configuration name="validate-config" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
       <parameters value="validate-config " />
@@ -85,6 +87,113 @@
         <option name="GoBeforeRunTask" command="vet" />
       </method>
     </configuration>
+    <configuration name="wip" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <parameters value="wip" />
+      <envs>
+        <env name="KAMONITU_DEBUG" value="1" />
+        <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
+      </envs>
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.GolandRunConfigurationExtension">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="GoBeforeRunTask" command="fmt" />
+        <option name="GoBeforeRunTask" command="vet" />
+      </method>
+    </configuration>
+    <configuration name="TestReadIniFile/Keys_with_whitespace in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestReadIniFile\E$/^\QKeys_with_whitespace\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestReadIniFile/double_equals_sign in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestReadIniFile\E$/^\Qdouble_equals_sign\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestReadIniFile/empty_ini_file in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestReadIniFile\E$/^\Qempty_ini_file\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestReadIniFile/missing_equals_sign in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestReadIniFile\E$/^\Qmissing_equals_sign\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.GolandRunConfigurationExtension">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <kind value="DIRECTORY" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="inifile_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/inifile_test.go" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.validate-config" />
+      <item itemvalue="Go Build.wip" />
+      <item itemvalue="Go Test.go test go-kamonitu" />
+      <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
+      <item itemvalue="Go Test.TestReadIniFile/double_equals_sign in go-kamonitu" />
+      <item itemvalue="Go Test.TestReadIniFile/empty_ini_file in go-kamonitu" />
+      <item itemvalue="Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu" />
+      <item itemvalue="Go Test.inifile_test.go" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
+        <item itemvalue="Go Test.inifile_test.go" />
+        <item itemvalue="Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu" />
+        <item itemvalue="Go Test.TestReadIniFile/double_equals_sign in go-kamonitu" />
+        <item itemvalue="Go Test.TestReadIniFile/empty_ini_file in go-kamonitu" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -93,20 +202,10 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="soviel" />
     <MESSAGE value="Korrektes Erkennen von Parametern und Env-Variablen" />
-    <option name="LAST_COMMIT_MESSAGE" value="Korrektes Erkennen von Parametern und Env-Variablen" />
+    <MESSAGE value="Composed Structs werden nich korrekt verarbeitet" />
+    <option name="LAST_COMMIT_MESSAGE" value="Composed Structs werden nich korrekt verarbeitet" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/inifile.go</url>
-          <line>64</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

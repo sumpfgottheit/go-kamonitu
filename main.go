@@ -19,7 +19,7 @@ func main() {
 		Use:   "kamonitu",
 		Short: "Kamonitu is a configuration validation tool.",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			if cmd.Use == "completion" {
+			if cmd.Use == "completion" || cmd.Use == "wip" || cmd.Use == "version" || cmd.Use == "help" {
 				return nil
 			}
 			var err error
@@ -64,6 +64,23 @@ func main() {
 		},
 	}
 	rootCmd.AddCommand(validateConfigCmd)
+
+	wipCmd := &cobra.Command{
+		Use:   "wip",
+		Short: "WIP",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fmt.Printf("WIP\n")
+			m, err := readIniFile("_working_dir/etc/kamonitu/kamonitu.ini")
+			if err != nil {
+				return err
+			}
+			for k, v := range m {
+				fmt.Printf("%s: %s\n", k, v)
+			}
+			return nil
+		},
+	}
+	rootCmd.AddCommand(wipCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.Error("Command execution failed.", "error", err)
