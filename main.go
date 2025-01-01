@@ -70,13 +70,27 @@ func main() {
 		Short: "WIP",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Printf("WIP\n")
-			m, err := readIniFile("_working_dir/etc/kamonitu/kamonitu.ini")
+
+			type User struct {
+				Username string `db:"username"`
+				Age      int    `db:"age"`
+			}
+			f := User{
+				Username: "Max",
+				Age:      25,
+			}
+
+			m := map[string]string{
+				"username": "Max",
+				"age":      "25",
+			}
+
+			result, err := ParseStringMapToStruct(m, f)
 			if err != nil {
 				return err
 			}
-			for k, v := range m {
-				fmt.Printf("%s: %s\n", k, v)
-			}
+			fmt.Printf("Result: %v\n", result)
+
 			return nil
 		},
 	}

@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="inifile.ReadIniFile mit Tests">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Weiter gehts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inifile_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +42,9 @@
     "Go Build.go build go-kamonitu.executor": "Run",
     "Go Build.validate-config.executor": "Run",
     "Go Build.wip.executor": "Run",
+    "Go Test.TestParseStringMapToStruct in go-kamonitu.executor": "Run",
+    "Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu.executor": "Run",
+    "Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu.executor": "Debug",
     "Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu.executor": "Run",
     "Go Test.TestReadIniFile/double_equals_sign in go-kamonitu.executor": "Run",
     "Go Test.TestReadIniFile/empty_ini_file in go-kamonitu.executor": "Run",
@@ -65,7 +71,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.inifile_test.go">
+  <component name="RunManager" selected="Go Test.TestParseStringMapToStruct in go-kamonitu">
     <configuration name="validate-config" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
@@ -108,6 +114,39 @@
         <option name="GoBeforeRunTask" command="vet" />
       </method>
     </configuration>
+    <configuration name="TestParseStringMapToStruct in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestParseStringMapToStruct\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestParseStringMapToStruct\E$/^\Qinvalid_int_value_in_map\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestParseStringMapToStruct\E$/^\Qvalid_mapping_to_struct\E$" />
+      <method v="2" />
+    </configuration>
     <configuration name="TestReadIniFile/Keys_with_whitespace in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
@@ -117,39 +156,6 @@
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
       <pattern value="^\QTestReadIniFile\E$/^\QKeys_with_whitespace\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestReadIniFile/double_equals_sign in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-kamonitu" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="go-kamonitu" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestReadIniFile\E$/^\Qdouble_equals_sign\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestReadIniFile/empty_ini_file in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-kamonitu" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="go-kamonitu" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestReadIniFile\E$/^\Qempty_ini_file\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestReadIniFile/missing_equals_sign in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-kamonitu" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="go-kamonitu" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestReadIniFile\E$/^\Qmissing_equals_sign\E$" />
       <method v="2" />
     </configuration>
     <configuration name="go test go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
@@ -179,19 +185,19 @@
       <item itemvalue="Go Build.validate-config" />
       <item itemvalue="Go Build.wip" />
       <item itemvalue="Go Test.go test go-kamonitu" />
+      <item itemvalue="Go Test.TestParseStringMapToStruct in go-kamonitu" />
+      <item itemvalue="Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu" />
+      <item itemvalue="Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu" />
       <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
-      <item itemvalue="Go Test.TestReadIniFile/double_equals_sign in go-kamonitu" />
-      <item itemvalue="Go Test.TestReadIniFile/empty_ini_file in go-kamonitu" />
-      <item itemvalue="Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu" />
       <item itemvalue="Go Test.inifile_test.go" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestParseStringMapToStruct in go-kamonitu" />
+        <item itemvalue="Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu" />
+        <item itemvalue="Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu" />
         <item itemvalue="Go Test.inifile_test.go" />
         <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
-        <item itemvalue="Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu" />
-        <item itemvalue="Go Test.TestReadIniFile/double_equals_sign in go-kamonitu" />
-        <item itemvalue="Go Test.TestReadIniFile/empty_ini_file in go-kamonitu" />
       </list>
     </recent_temporary>
   </component>
@@ -204,7 +210,8 @@
     <MESSAGE value="Korrektes Erkennen von Parametern und Env-Variablen" />
     <MESSAGE value="Composed Structs werden nich korrekt verarbeitet" />
     <MESSAGE value="inifile.ReadIniFile mit Tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="inifile.ReadIniFile mit Tests" />
+    <MESSAGE value="Weiter gehts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Weiter gehts" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

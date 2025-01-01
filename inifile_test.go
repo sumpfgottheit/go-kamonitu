@@ -187,3 +187,143 @@ type EmbeddedStruct struct {
 	FieldA int
 	FieldB string
 }
+
+func TestParseStringMapToStruct(t *testing.T) {
+
+	type User struct {
+		Username string `db:"username"`
+		Age      int    `db:"age"`
+	}
+
+	tests := []struct {
+		name      string
+		iniMap    map[string]string
+		defaults  User
+		want      User
+		expectErr bool
+	}{
+		{
+			name: "valid mapping to struct",
+			iniMap: map[string]string{
+				"username": "John Doe",
+				"age":      "42",
+			},
+			defaults: User{},
+			want: User{
+				Username: "John Doe",
+				Age:      42,
+			},
+			expectErr: false,
+		},
+		{
+			name: "missing key in map",
+			iniMap: map[string]string{
+				"username": "John Doe",
+			},
+			defaults: User{},
+			want: User{
+				Username: "John Doe",
+				Age:      0,
+			},
+			expectErr: false,
+		},
+		{
+			name: "struct with unsupported field type",
+			iniMap: map[string]string{
+				"age": "4.2",
+			},
+			defaults:  User{},
+			want:      User{},
+			expectErr: true,
+		},
+		{
+			name: "invalid int value in map",
+			iniMap: map[string]string{
+				"age": "thirty",
+			},
+			defaults:  User{},
+			want:      User{},
+			expectErr: true,
+		},
+		{
+			name: "unused keys in map",
+			iniMap: map[string]string{
+				"username":  "john_doe",
+				"unusedKey": "some_value",
+			},
+			defaults:  User{},
+			want:      User{},
+			expectErr: true,
+		},
+		{
+			name:      "empty string map",
+			iniMap:    map[string]string{},
+			defaults:  User{},
+			want:      User{},
+			expectErr: false,
+		},
+		{
+			name:   "empty string map with defaults",
+			iniMap: map[string]string{},
+			defaults: User{
+				Username: "John Doe",
+				Age:      42,
+			},
+			want: User{
+				Username: "John Doe",
+				Age:      42,
+			},
+			expectErr: false,
+		},
+		{
+			name:   "empty string map with defaults - 2",
+			iniMap: map[string]string{},
+			defaults: User{
+				Age: 44,
+			},
+			want: User{
+				Username: "",
+				Age:      44,
+			},
+			expectErr: false,
+		},
+		{
+			name: "empty struct",
+			iniMap: map[string]string{
+				"username": "Arno Nym",
+			},
+			defaults: User{},
+			want: User{
+				Username: "Arno Nym",
+				Age:      0,
+			},
+			expectErr: false,
+		},
+		{
+			name: "valid mapping with tag mismatch",
+			iniMap: map[string]string{
+				"wrong_key": "unknown",
+			},
+			defaults:  User{},
+			want:      User{},
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseStringMapToStruct(tt.iniMap, tt.defaults)
+
+			// Validate error expectation
+			if (err != nil) != tt.expectErr {
+				t.Errorf("ParseStringMapToStruct() error = %v, expectErr = %v", err, tt.expectErr)
+				return
+			}
+
+			// Validate returned struct
+			if !tt.expectErr && !reflect.DeepEqual(*got, tt.want) {
+				t.Errorf("ParseStringMapToStruct() got = %v, want = %v", got, tt.want)
+			}
+		})
+	}
+}

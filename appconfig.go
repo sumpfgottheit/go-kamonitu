@@ -32,11 +32,17 @@ func makeAppConfig(path string) (*AppConfig, error) {
 		return nil, fmt.Errorf("Config File %v nicht vorhanden", path)
 	}
 
-	appconfig, err := ParseIniFileToStruct(path, appConfigDefaults)
+	iniFileMap, err := readIniFile(path)
 	if err != nil {
 		return nil, err
 	}
-	slog.Info("Parsed ini file.", "config", appconfig)
+	slog.Info("Parsed ini file.", "path", path)
+
+	appconfig, err := ParseStringMapToStruct(iniFileMap, appConfigDefaults)
+	if err != nil {
+		return nil, err
+	}
+	slog.Info("Parsed ini file to struct.", "path", path, "appconfig", appconfig)
 
 	appconfig.CheckDefinitionsDir = appconfig.ConfigDir + "/check_definitions"
 	if err = ValidateStruct(appconfig); err != nil {

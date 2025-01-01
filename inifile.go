@@ -80,11 +80,15 @@ func getFieldNamesForStruct(s interface{}) []string {
 // to determine the mapping. It supports string and int types.
 func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, error) {
 	// Create a new instance of the struct type
+
 	configInstance := defaults
 	configPointer := &configInstance
 
 	typ := reflect.TypeOf(configInstance)
 	val := reflect.ValueOf(configPointer).Elem()
+
+	// Alles Keys die es in der Map gibt, müssen im Struct vorhanden sein, es können aber auch weniger sein
+	mapKeysUsed := 0
 
 	// Iterate over each field in the struct
 	for _, fieldName := range getFieldNamesForStruct(configInstance) {
@@ -96,6 +100,7 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 
 		// Check if iniKey exists in the map
 		if value, exists := iniMap[iniKey]; exists {
+			mapKeysUsed++
 			switch field.Type.Kind() {
 			case reflect.Int: // Handle integer fields
 				intValue, err := strconv.Atoi(value)
@@ -109,6 +114,10 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 				return nil, fmt.Errorf("unsupported type for field %v", field.Name)
 			}
 		}
+	}
+
+	if mapKeysUsed < len(iniMap) {
+		return nil, fmt.Errorf("ini file contains keys that are not used in the struct: %v", getKeys(iniMap)[mapKeysUsed:])
 	}
 	return configPointer, nil
 }
@@ -134,4 +143,12 @@ func mtimeForFile(filename string) (int64, error) {
 		return 0, fmt.Errorf("failed to stat file %q: %v", filename, err)
 	}
 	return fileInfo.ModTime().Unix(), nil
+}
+
+func getKeys(m map[string]string) []string {
+	keys := make([]string, 0, len(m)) // Create a slice with an initial capacity
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }

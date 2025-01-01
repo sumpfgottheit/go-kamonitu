@@ -70,7 +70,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		return err
 	}
 	c.CheckDefinitions = make(map[string]CheckDefinition, len(c.definitionsFilesMtimes))
-	for fileName, mtime := range c.definitionsFilesMtimes {
+	/*	for fileName, mtime := range c.definitionsFilesMtimes {
 		filePath := c.directory + "/" + fileName
 		slog.Info("Found check definition file.", "file", filePath)
 
@@ -89,6 +89,6 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		}
 		slog.Info("Parsed ini file.", "file", filePath, "content", checkDefinitionContent)
 		c.CheckDefinitions[fileName] = *checkDefinitionContent
-	}
+	}*/
 	return nil
 }
