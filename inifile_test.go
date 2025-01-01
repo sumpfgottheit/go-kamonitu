@@ -122,3 +122,68 @@ key2 = value2
 		})
 	}
 }
+
+func TestGetFieldNamesForStruct(t *testing.T) {
+	tests := []struct {
+		name  string
+		input interface{}
+		want  []string
+	}{
+		{
+			name:  "empty struct",
+			input: struct{}{},
+			want:  []string{},
+		},
+		{
+			name: "struct with fields",
+			input: struct {
+				Field1 string
+				Field2 int
+			}{},
+			want: []string{"Field1", "Field2"},
+		},
+		{
+			name: "struct with embedded anonymous field",
+			input: struct {
+				Field1 string
+				EmbeddedStruct
+			}{},
+			want: []string{"Field1", "FieldA", "FieldB"},
+		},
+		{
+			name: "pointer to a struct",
+			input: &struct {
+				Field1 string
+				Field2 int
+			}{},
+			want: []string{"Field1", "Field2"},
+		},
+		{
+			name: "struct with deeply nested anonymous structs",
+			input: struct {
+				Level1 struct {
+					Level2 struct {
+						Level3 struct {
+							Field string
+						}
+					}
+				}
+			}{},
+			want: []string{"Field"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := getFieldNamesForStruct(tt.input)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("getFieldNamesForStruct() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+type EmbeddedStruct struct {
+	FieldA int
+	FieldB string
+}

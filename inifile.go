@@ -3,9 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"gopkg.in/ini.v1"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -56,86 +56,60 @@ func readIniFile(filePath string) (map[string]string, error) {
 	return config, nil
 }
 
-func collectFieldNames(t reflect.Type, m map[string]struct{}) {
-
-	// Return if not struct or pointer to struct.
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
+// getFieldNamesForStruct retrieves all field names of a struct, including those from embedded structs.
+func getFieldNamesForStruct(s interface{}) []string {
+	var fieldNames []string
+	typ := reflect.TypeOf(s)
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
 	}
-	if t.Kind() != reflect.Struct {
-		return
-	}
-
-	// Iterate through fields collecting names in map.
-	for i := 0; i < t.NumField(); i++ {
-		sf := t.Field(i)
-		m[sf.Name] = struct{}{}
-
-		// Recurse into anonymous fields.
-		if sf.Anonymous {
-			collectFieldNames(sf.Type, m)
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		if field.Anonymous {
+			// Recursively get fields from embedded structs
+			embeddedFields := getFieldNamesForStruct(reflect.New(field.Type).Interface())
+			fieldNames = append(fieldNames, embeddedFields...)
+		} else {
+			fieldNames = append(fieldNames, field.Name)
 		}
 	}
+	return fieldNames
 }
 
-func ParseIniFileToStruct[T AppConfig | CheckDefinitionDefaults | CheckDefinition](filePath string, defaults T) (*T, error) {
-	// Load the ini file
-	iniFile, err := ini.Load(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load ini file: %v", err)
-	}
-
-	section := iniFile.Section("")
-	if section == nil {
-		return nil, fmt.Errorf("Nur Key=Val ohne Sectionnamen erlaubt")
-	}
-
-	// Create default struct instance to populate
+// ParseStringMapToStruct maps a string map to a struct, using the "db" tag in struct fields
+// to determine the mapping. It supports string and int types.
+func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, error) {
+	// Create a new instance of the struct type
 	configInstance := defaults
 	configPointer := &configInstance
 
-	// Process the 'CheckDefinitionDefaults' struct to validate and map
-	typ := reflect.TypeOf(*configPointer)
+	typ := reflect.TypeOf(configInstance)
 	val := reflect.ValueOf(configPointer).Elem()
 
-	m := make(map[string]struct{})
-	collectFieldNames(typ, m)
-
-	for i := 0; i < typ.NumField(); i++ {
-		field := typ.Field(i)
-		iniKey := field.Tag.Get("db")    // The key in the ini file
-		required := field.Tag.Get("ini") // Check if it's marked as "required"
-
-		// Validate required keys
-		if required == "required" && !section.HasKey(iniKey) {
-			return nil, fmt.Errorf("%v: missing required key: %v", filePath, iniKey)
+	// Iterate over each field in the struct
+	for _, fieldName := range getFieldNamesForStruct(configInstance) {
+		field, exists := typ.FieldByName(fieldName)
+		if !exists {
+			return nil, fmt.Errorf("field %v not found in struct", fieldName)
 		}
+		iniKey := field.Tag.Get("db")
 
-		// If the key exists, map it to the struct
-		if section.HasKey(iniKey) {
-			key := section.Key(iniKey)
-
-			// Check field type and assign value properly
+		// Check if iniKey exists in the map
+		if value, exists := iniMap[iniKey]; exists {
 			switch field.Type.Kind() {
-			case reflect.Int:
-				intValue, err := key.Int()
+			case reflect.Int: // Handle integer fields
+				intValue, err := strconv.Atoi(value)
 				if err != nil {
-					return nil, fmt.Errorf("%v: invalid integer for key: %v, value: %v", filePath, iniKey, key)
+					return nil, fmt.Errorf("invalid integer for key %v: value %v", iniKey, value)
 				}
-				val.Field(i).SetInt(int64(intValue))
-			case reflect.String:
-				stringValue := key.String()
-				val.Field(i).SetString(stringValue)
-			default:
-				return nil, fmt.Errorf("unsupported key type for key: %v", iniKey)
+				val.FieldByName(fieldName).SetInt(int64(intValue))
+			case reflect.String: // Handle string fields
+				val.FieldByName(fieldName).SetString(value)
+			default: // Unsupported types
+				return nil, fmt.Errorf("unsupported type for field %v", field.Name)
 			}
-		} else {
-			// Fallback to hardcoded check_defaults.ini if not present (optional keys)
-			defaultVal := val.Field(i).Interface()
-			val.Field(i).Set(reflect.ValueOf(defaultVal))
 		}
 	}
-
 	return configPointer, nil
 }
 

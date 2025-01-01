@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Composed Structs werden nich korrekt verarbeitet">
-      <change afterPath="$PROJECT_DIR$/inifile_test.go" afterDir="false" />
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="inifile.ReadIniFile mit Tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inifile_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +43,7 @@
     "Go Test.TestReadIniFile/double_equals_sign in go-kamonitu.executor": "Run",
     "Go Test.TestReadIniFile/empty_ini_file in go-kamonitu.executor": "Run",
     "Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu.executor": "Run",
+    "Go Test.go test go-kamonitu.executor": "Run",
     "Go Test.inifile_test.go.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -65,7 +65,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.go test go-kamonitu">
+  <component name="RunManager" selected="Go Test.inifile_test.go">
     <configuration name="validate-config" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
@@ -187,8 +187,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
         <item itemvalue="Go Test.inifile_test.go" />
+        <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
         <item itemvalue="Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu" />
         <item itemvalue="Go Test.TestReadIniFile/double_equals_sign in go-kamonitu" />
         <item itemvalue="Go Test.TestReadIniFile/empty_ini_file in go-kamonitu" />
@@ -203,7 +203,8 @@
     <MESSAGE value="soviel" />
     <MESSAGE value="Korrektes Erkennen von Parametern und Env-Variablen" />
     <MESSAGE value="Composed Structs werden nich korrekt verarbeitet" />
-    <option name="LAST_COMMIT_MESSAGE" value="Composed Structs werden nich korrekt verarbeitet" />
+    <MESSAGE value="inifile.ReadIniFile mit Tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="inifile.ReadIniFile mit Tests" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
