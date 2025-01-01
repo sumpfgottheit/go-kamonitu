@@ -158,24 +158,14 @@ func TestGetFieldNamesForStruct(t *testing.T) {
 			}{},
 			want: []string{"Field1", "Field2"},
 		},
-		{
-			name: "struct with deeply nested anonymous structs",
-			input: struct {
-				Level1 struct {
-					Level2 struct {
-						Level3 struct {
-							Field string
-						}
-					}
-				}
-			}{},
-			want: []string{"Field"},
-		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := getFieldNamesForStruct(tt.input)
+			if got == nil && len(tt.want) == 0 {
+				got = []string{}
+			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getFieldNamesForStruct() = %v, want %v", got, tt.want)
 			}

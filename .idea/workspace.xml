@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Weiter gehts">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="ParseStringMapToStruct with tests">
+      <change afterPath="$PROJECT_DIR$/checkdefinition_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inifile_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +42,17 @@
     "Go Build.go build go-kamonitu.executor": "Run",
     "Go Build.validate-config.executor": "Run",
     "Go Build.wip.executor": "Run",
+    "Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu.executor": "Debug",
+    "Go Test.TestLoadCheckDefinitionDefaults in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadCheckDefinitionDefaults/Defaults_und_Hardcoded_Defaults_1:1_aber_nur_ein_Paramater_gesetzts in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadCheckDefinitionDefaults/Empty_file#01 in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadCheckDefinitionDefaults/Ungültige_Wert in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadCheckDefinitionDefaults/Ungültiger_Key in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadCheckDefinitionDefaults/Überschreibe_interval_seconds_between_checks in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu.executor": "Run",
+    "Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu.executor": "Debug",
+    "Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu.executor": "Run",
+    "Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu.executor": "Run",
     "Go Test.TestParseStringMapToStruct in go-kamonitu.executor": "Run",
     "Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu.executor": "Run",
     "Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu.executor": "Debug",
@@ -71,7 +82,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestParseStringMapToStruct in go-kamonitu">
+  <component name="RunManager" selected="Go Test.go test go-kamonitu">
     <configuration name="validate-config" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
@@ -114,18 +125,22 @@
         <option name="GoBeforeRunTask" command="vet" />
       </method>
     </configuration>
-    <configuration name="TestParseStringMapToStruct in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestGetFieldNamesForStruct/empty_struct in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.GolandRunConfigurationExtension">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
       <kind value="PACKAGE" />
       <package value="go-kamonitu" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestParseStringMapToStruct\E$" />
+      <pattern value="^\QTestGetFieldNamesForStruct\E$/^\Qempty_struct\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestLoadDefinitionsFilesMtimeMap in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
@@ -133,10 +148,10 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestParseStringMapToStruct\E$/^\Qinvalid_int_value_in_map\E$" />
+      <pattern value="^\QTestLoadDefinitionsFilesMtimeMap\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
@@ -144,10 +159,10 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestParseStringMapToStruct\E$/^\Qvalid_mapping_to_struct\E$" />
+      <pattern value="^\QTestLoadDefinitionsFilesMtimeMapInvalidDirectory\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestReadIniFile/Keys_with_whitespace in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
@@ -155,7 +170,18 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestReadIniFile\E$/^\QKeys_with_whitespace\E$" />
+      <pattern value="^\QTestLoadDefinitionsFilesMtimeMap\E$/^\QInvalid_directory\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestMakeCheckDefinitionFileStore in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestMakeCheckDefinitionFileStore\E$" />
       <method v="2" />
     </configuration>
     <configuration name="go test go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
@@ -172,32 +198,23 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
-    <configuration name="inifile_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-kamonitu" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/inifile_test.go" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Go Build.validate-config" />
       <item itemvalue="Go Build.wip" />
       <item itemvalue="Go Test.go test go-kamonitu" />
-      <item itemvalue="Go Test.TestParseStringMapToStruct in go-kamonitu" />
-      <item itemvalue="Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu" />
-      <item itemvalue="Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu" />
-      <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
-      <item itemvalue="Go Test.inifile_test.go" />
+      <item itemvalue="Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu" />
+      <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu" />
+      <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu" />
+      <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu" />
+      <item itemvalue="Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestParseStringMapToStruct in go-kamonitu" />
-        <item itemvalue="Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu" />
-        <item itemvalue="Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu" />
-        <item itemvalue="Go Test.inifile_test.go" />
-        <item itemvalue="Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu" />
+        <item itemvalue="Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu" />
+        <item itemvalue="Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu" />
+        <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu" />
+        <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu" />
+        <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu" />
       </list>
     </recent_temporary>
   </component>
@@ -211,7 +228,8 @@
     <MESSAGE value="Composed Structs werden nich korrekt verarbeitet" />
     <MESSAGE value="inifile.ReadIniFile mit Tests" />
     <MESSAGE value="Weiter gehts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Weiter gehts" />
+    <MESSAGE value="ParseStringMapToStruct with tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="ParseStringMapToStruct with tests" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
