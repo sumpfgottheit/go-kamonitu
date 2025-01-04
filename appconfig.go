@@ -21,7 +21,7 @@ type AppConfig struct {
 	configFilePath                     string
 }
 
-var appConfigMap = map[string]string{
+var appConfigDefaultMap = map[string]string{
 	"var_dir":    "/var/lib/kamonitu",
 	"config_dir": "/etc/kamonitu",
 	"log_dir":    "/var/log/kamonitu",
@@ -29,6 +29,7 @@ var appConfigMap = map[string]string{
 	"interval_seconds_between_main_loop_runs": "60",
 	"check_definitions_dir":                   "/etc/kamonitu/check_definitions",
 }
+var appConfigMap = make(map[string]string, len(appConfigDefaultMap))
 
 var appConfigSourceMap = map[string]string{
 	"var_dir":    "hardcoded",
@@ -51,11 +52,12 @@ func makeAppConfig(path string) (*AppConfig, error) {
 	}
 	slog.Info("Parsed ini file.", "path", path)
 
-	for key, _ := range appConfigMap {
-		if newKey, ok := iniFileMap[key]; ok {
-			appConfigMap[key] = newKey
-			appConfigSourceMap[key] = "ini"
-		}
+	for key, value := range appConfigDefaultMap {
+		appConfigMap[key] = value
+	}
+	for key, value := range iniFileMap {
+		appConfigMap[key] = value
+		appConfigSourceMap[key] = "ini"
 	}
 
 	appconfig, err := ParseStringMapToStruct(appConfigMap, AppConfig{})

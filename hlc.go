@@ -30,6 +30,16 @@ func DumpConfigHlc(config *AppConfig) error {
 		fmt.Printf("%v=%v [%s]\n", v, m[v], appConfigSourceMap[v])
 	}
 
+	store, err := makeCheckDefinitionFileStore(*config)
+	if err != nil {
+		slog.Error("Failed to make CheckDefinitionFileStore", "error", err)
+		return err
+	}
+	err = store.LoadCheckDefinitionsFromDisk()
+	if err != nil {
+		slog.Error("Failed to load CheckDefinitions from Disk", "error", err)
+		return err
+	}
 	return nil
 }
 

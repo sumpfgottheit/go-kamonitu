@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="CheckDefinitionStore lädt korrket mit Tests">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Wieder was umgebaut">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/checkdefinition_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/validation.go" beforeDir="false" afterPath="$PROJECT_DIR$/validation.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -254,7 +250,8 @@
     <MESSAGE value="inifile.ReadIniFile mit Tests" />
     <MESSAGE value="Weiter gehts" />
     <MESSAGE value="ParseStringMapToStruct with tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="ParseStringMapToStruct with tests" />
+    <MESSAGE value="Wieder was umgebaut" />
+    <option name="LAST_COMMIT_MESSAGE" value="Wieder was umgebaut" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

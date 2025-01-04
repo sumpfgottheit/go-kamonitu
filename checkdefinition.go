@@ -74,6 +74,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		return fmt.Errorf("failed to read directory %q: %v", c.directory, err)
 	}
 	c.CheckDefinitionSources = make(map[string]map[string]string, len(files))
+	c.CheckDefinitions = make(map[string]CheckDefinition, len(files))
 
 	var iniFileMap map[string]string
 	for _, file := range files {
