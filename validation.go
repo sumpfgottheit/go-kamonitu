@@ -99,7 +99,7 @@ func ValidateStruct(input any) error {
 			} else if strings.HasPrefix(validationRules, "oneOf(") && strings.HasSuffix(validationRules, ")") {
 				values := strings.Split(validationRules[6:len(validationRules)-1], ",")
 				if !slices.Contains(values, v) {
-					return fmt.Errorf("field %v must be one of %v", field.Name, values)
+					return fmt.Errorf("field %v must be one of %v, but is %v", field.Name, values, v)
 				}
 			} else {
 				return fmt.Errorf("validation rule %v not supported for field %v", validationRules, field.Name)

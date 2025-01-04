@@ -38,6 +38,7 @@ func main() {
 
 			appConfig, err = makeAppConfig(configFile)
 			if err != nil {
+				slog.Error("Failed to make AppConfig", "error", err)
 				return err
 			}
 			slog.Debug("root.PersistentPreRunE successfull")
@@ -64,6 +65,16 @@ func main() {
 		},
 	}
 	rootCmd.AddCommand(validateConfigCmd)
+
+	/* dump-config */
+	dumpConfigCmd := &cobra.Command{
+		Use:   "dump-config",
+		Short: "Dumps the current config to stdout.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return DumpConfigHlc(appConfig)
+		},
+	}
+	rootCmd.AddCommand(dumpConfigCmd)
 
 	wipCmd := &cobra.Command{
 		Use:   "wip",

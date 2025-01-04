@@ -10,44 +10,41 @@ const (
 	checkDefinitionDefaultsFileName = "check_defaults.ini"
 )
 
-type CheckDefinitionDefaults struct {
-	IntervalSecondsBetweenChecks      int `db:"interval_seconds_between_checks"`
-	DelaySecondsBeforeFirstCheck      int `db:"delay_seconds_before_first_check"`
-	TimeoutSeconds                    int `db:"timeout_seconds"`
-	StopCheckingAfterNumberOfTimeouts int `db:"stop_checking_after_number_of_timeouts"`
+var checkDefinitionDefaultsMap = map[string]string{
+	"interval_seconds_between_checks":        "60",
+	"delay_seconds_before_first_check":       "0",
+	"timeout_seconds":                        "60",
+	"stop_checking_after_number_of_timeouts": "3",
+}
+
+var checkDefinitionDefaultsSourceMap = map[string]string{
+	"interval_seconds_between_checks":        "hardcoded",
+	"delay_seconds_before_first_check":       "hardcoded",
+	"timeout_seconds":                        "hardcoded",
+	"stop_checking_after_number_of_timeouts": "hardcoded",
 }
 
 type CheckDefinition struct {
-	CheckDefinitionDefaults
-	CheckCommand        string `db:"check_command" ini:"required"`
-	DefinitionFilePath  string `db:"definition_file_path"`
-	DefinitionFileMtime int64  `db:"definition_file_mtime"`
-}
-
-var checkDefinitionHardcodedDefaults = CheckDefinitionDefaults{
-	IntervalSecondsBetweenChecks:      60,
-	DelaySecondsBeforeFirstCheck:      0,
-	TimeoutSeconds:                    60,
-	StopCheckingAfterNumberOfTimeouts: 3,
+	CheckCommand                      string `db:"check_command" ini:"required"`
+	DefinitionFilePath                string `db:"definition_file_path"`
+	IntervalSecondsBetweenChecks      int    `db:"interval_seconds_between_checks"`
+	DelaySecondsBeforeFirstCheck      int    `db:"delay_seconds_before_first_check"`
+	TimeoutSeconds                    int    `db:"timeout_seconds"`
+	StopCheckingAfterNumberOfTimeouts int    `db:"stop_checking_after_number_of_timeouts"`
 }
 
 type CheckDefinitionFileStore struct {
-	directory               string
-	definitionsFilesMtimes  map[string]int64
-	checkDefinitionDefaults CheckDefinitionDefaults
-	CheckDefinitions        map[string]CheckDefinition
+	directory              string
+	CheckDefinitions       map[string]CheckDefinition
+	CheckDefinitionSources map[string]map[string]string
 }
 
-// LoadCheckDefinitionDefaults loads default check definitions from a specified file.
-// Falls back to hardcoded defaults if the file is missing or invalid.
-// Validates and parses the file content into the appropriate struct.
-// Returns an error if reading, parsing, or validation fails.
+// LoadCheckDefinitionDefaults loads default check definition settings from a specified INI file and updates the current configuration.
 func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile string) error {
 	slog.Info("Loading check definition defaults from disk.", "checkDefaultsFile", checkDefaultsFile)
 	_, err := os.Stat(checkDefaultsFile)
 	if err != nil {
 		slog.Warn("Check definition defaults file not found.", "file", checkDefaultsFile)
-		c.checkDefinitionDefaults = checkDefinitionHardcodedDefaults
 		return nil
 	}
 
@@ -56,98 +53,75 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile
 		slog.Error("Check definition defaults file could not be read.", "file", checkDefaultsFile)
 		return err
 	}
+	slog.Info("Parsed ini file.", "path", checkDefaultsFile, "iniFileMap", iniFileMap)
 
-	checkDefinitionDefaultsContent, err := ParseStringMapToStruct(iniFileMap, checkDefinitionHardcodedDefaults)
-	if err != nil {
-		slog.Error("Check definition defaults file could not be parsed.", "file", checkDefaultsFile)
-		return err
-	}
-
-	err = ValidateStruct(checkDefinitionDefaultsContent)
-	if err != nil {
-		slog.Error("Check definition defaults file could not be validated.", "file", checkDefaultsFile)
-		return err
-	}
-	slog.Info("Loaded check definition defaults from disk.", "file", checkDefaultsFile, "content", checkDefinitionDefaultsContent)
-	c.checkDefinitionDefaults = *checkDefinitionDefaultsContent
-	return nil
-}
-
-// LoadDefinitionsFilesMtimeMap scans the directory for .ini files, retrieves their modification times, and updates the mtimes map.
-// Returns an error if directory reading or file stat operation fails.
-func (c *CheckDefinitionFileStore) LoadDefinitionsFilesMtimeMap() error {
-	slog.Info("Loading check files with mtimes from disk.", "directory", c.directory)
-	files, err := os.ReadDir(c.directory)
-	if err != nil {
-		return fmt.Errorf("failed to read directory %q: %v", c.directory, err)
-	}
-	c.definitionsFilesMtimes = make(map[string]int64, len(files))
-	for _, file := range files {
-		if file.IsDir() || !isIniFile(file.Name()) {
-			continue
+	for key, _ := range checkDefinitionDefaultsMap {
+		if newKey, ok := iniFileMap[key]; ok {
+			checkDefinitionDefaultsMap[key] = newKey
+			checkDefinitionDefaultsSourceMap[key] = "default-ini"
 		}
-
-		filePath := c.directory + "/" + file.Name()
-		fileInfo, err := os.Stat(filePath)
-		if err != nil {
-			return fmt.Errorf("failed to stat file %q: %v", filePath, err)
-		}
-		slog.Info("Found check definition file. Fetch Mtime", "file", filePath)
-
-		c.definitionsFilesMtimes[file.Name()] = fileInfo.ModTime().Unix()
 	}
-	slog.Info("Loaded check files with mtimes from disk.", "length", len(c.definitionsFilesMtimes))
 	return nil
 }
 
 // LoadCheckDefinitionsFromDisk loads check definitions from .ini files in the directory and parses their contents into structs.
 // Fills the slice checkDefinitions
 func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
-	slog.Info("Loading check definitions from disk.", "directory", c.directory)
-	err := c.LoadDefinitionsFilesMtimeMap()
+
+	slog.Info("Loading check files from disk.", "directory", c.directory)
+	files, err := os.ReadDir(c.directory)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to read directory %q: %v", c.directory, err)
 	}
-	c.CheckDefinitions = make(map[string]CheckDefinition, len(c.definitionsFilesMtimes))
-	for fileName, mtime := range c.definitionsFilesMtimes {
-		filePath := c.directory + "/" + fileName
-		slog.Info("Found check definition file.", "file", filePath)
+	c.CheckDefinitionSources = make(map[string]map[string]string, len(files))
 
-		ck := CheckDefinition{
-			DefinitionFilePath:      filePath,
-			DefinitionFileMtime:     mtime,
-			CheckDefinitionDefaults: c.checkDefinitionDefaults,
+	var iniFileMap map[string]string
+	for _, file := range files {
+
+		if file.IsDir() || !isIniFile(file.Name()) {
+			continue
 		}
-		iniFileMap, err := readIniFile(filePath)
+
+		path := c.directory + "/" + file.Name()
+		iniFileMap, err = readIniFile(path)
 		if err != nil {
+			slog.Error("iniFile could not be read", "file", path)
 			return err
 		}
 
-		checkDefinitionContent, err := ParseStringMapToStruct(iniFileMap, ck)
+		c.CheckDefinitionSources[file.Name()] = make(map[string]string, 10)
+		for key, value := range checkDefinitionDefaultsSourceMap {
+			c.CheckDefinitionSources[file.Name()][key] = value
+		}
+		for key, _ := range iniFileMap {
+			c.CheckDefinitionSources[file.Name()][key] = "check-definition-ini"
+		}
+
+		var checkDefinitionContent *CheckDefinition
+		checkDefinitionContent, err = ParseStringMapToStruct(iniFileMap, CheckDefinition{})
 		if err != nil {
-			return err
+			slog.Error("Could not parse ini file to Struct", "file", path)
 		}
 
 		err = ValidateStruct(checkDefinitionContent)
 		if err != nil {
 			return err
 		}
-		slog.Info("Parsed ini file.", "file", filePath, "content", checkDefinitionContent)
-		c.CheckDefinitions[fileName] = *checkDefinitionContent
+		slog.Info("Parsed ini file.", "file", path, "content", checkDefinitionContent)
+		c.CheckDefinitions[file.Name()] = *checkDefinitionContent
 	}
+
 	return nil
 }
 
 // makeCheckDefinitionFileStore initializes and returns a CheckDefinitionFileStore with defaults loaded from a file or hardcoded values.
-func makeCheckDefinitionFileStore(checkDefinitionsDir string, checkDefinitionsDefaultFile string) (*CheckDefinitionFileStore, error) {
+func makeCheckDefinitionFileStore(config AppConfig) (*CheckDefinitionFileStore, error) {
 	slog.Info("make CheckDefinitionFileStore")
 	store := CheckDefinitionFileStore{
-		directory:               checkDefinitionsDir,
-		definitionsFilesMtimes:  make(map[string]int64),
-		checkDefinitionDefaults: checkDefinitionHardcodedDefaults,
+		directory: config.CheckDefinitionsDir,
 	}
 	slog.Info("Load check definition defaults from disk.")
-	err := store.LoadCheckDefinitionDefaults(checkDefinitionsDefaultFile)
+	err := store.LoadCheckDefinitionDefaults(config.ConfigDir + "/" + checkDefinitionDefaultsFileName)
 	if err != nil {
 		return nil, err
 	}

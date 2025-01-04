@@ -18,12 +18,25 @@ type AppConfig struct {
 	LogLevel                           string `db:"log_level" validation:"oneOf(debug,info,warn,error)"`
 	IntervalSecondsBetweenMainLoopRuns int    `db:"interval_seconds_between_main_loop_runs" validation:"within(1,60)"`
 	CheckDefinitionsDir                string `db:"check_definitions_dir" validation:"readableDirectory"`
+	configFilePath                     string
 }
 
-var appConfigDefaults = AppConfig{
-	LogLevel:                           "warning",
-	IntervalSecondsBetweenMainLoopRuns: 60,
-	CheckDefinitionsDir:                "/etc/kamonitu/check_definitions",
+var appConfigMap = map[string]string{
+	"var_dir":    "/var/lib/kamonitu",
+	"config_dir": "/etc/kamonitu",
+	"log_dir":    "/var/log/kamonitu",
+	"log_level":  "warn",
+	"interval_seconds_between_main_loop_runs": "60",
+	"check_definitions_dir":                   "/etc/kamonitu/check_definitions",
+}
+
+var appConfigSourceMap = map[string]string{
+	"var_dir":    "hardcoded",
+	"config_dir": "hardcoded",
+	"log_dir":    "hardcoded",
+	"log_level":  "hardcoded",
+	"interval_seconds_between_main_loop_runs": "hardcoded",
+	"check_definitions_dir":                   "hardcoded",
 }
 
 func makeAppConfig(path string) (*AppConfig, error) {
@@ -38,11 +51,19 @@ func makeAppConfig(path string) (*AppConfig, error) {
 	}
 	slog.Info("Parsed ini file.", "path", path)
 
-	appconfig, err := ParseStringMapToStruct(iniFileMap, appConfigDefaults)
+	for key, _ := range appConfigMap {
+		if newKey, ok := iniFileMap[key]; ok {
+			appConfigMap[key] = newKey
+			appConfigSourceMap[key] = "ini"
+		}
+	}
+
+	appconfig, err := ParseStringMapToStruct(appConfigMap, AppConfig{})
 	if err != nil {
 		return nil, err
 	}
 	slog.Info("Parsed ini file to struct.", "path", path, "appconfig", appconfig)
+	appconfig.configFilePath = path
 
 	appconfig.CheckDefinitionsDir = appconfig.ConfigDir + "/check_definitions"
 	if err = ValidateStruct(appconfig); err != nil {

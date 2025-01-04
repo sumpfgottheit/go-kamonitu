@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log/slog"
 	"os"
 	"reflect"
 	"strconv"
@@ -56,26 +57,6 @@ func readIniFile(filePath string) (map[string]string, error) {
 	return config, nil
 }
 
-// getFieldNamesForStruct retrieves all field names of a struct, including those from embedded structs.
-func getFieldNamesForStruct(s interface{}) []string {
-	var fieldNames []string
-	typ := reflect.TypeOf(s)
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
-	for i := 0; i < typ.NumField(); i++ {
-		field := typ.Field(i)
-		if field.Anonymous {
-			// Recursively get fields from embedded structs
-			embeddedFields := getFieldNamesForStruct(reflect.New(field.Type).Interface())
-			fieldNames = append(fieldNames, embeddedFields...)
-		} else {
-			fieldNames = append(fieldNames, field.Name)
-		}
-	}
-	return fieldNames
-}
-
 // ParseStringMapToStruct maps a string map to a struct, using the "db" tag in struct fields
 // to determine the mapping. It supports string and int types.
 func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, error) {
@@ -117,6 +98,7 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 	}
 
 	if mapKeysUsed < len(iniMap) {
+		slog.Error("ini file contains keys that are not used in the struct", "keys", getKeys(iniMap)[mapKeysUsed:])
 		return nil, fmt.Errorf("ini file contains keys that are not used in the struct: %v", getKeys(iniMap)[mapKeysUsed:])
 	}
 	return configPointer, nil
