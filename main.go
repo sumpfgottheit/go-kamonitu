@@ -29,6 +29,7 @@ func main() {
 			if configFile == DefaultConfigFilePath && os.Getenv(EnvVarConfigFilePath) != "" {
 				configFile = os.Getenv(EnvVarConfigFilePath)
 			}
+			AppConfigFilePath = configFile
 
 			if debug {
 				setupLogging(slog.LevelDebug, "")
@@ -67,14 +68,14 @@ func main() {
 	rootCmd.AddCommand(validateConfigCmd)
 
 	/* dump-config */
-	dumpConfigCmd := &cobra.Command{
-		Use:   "dump-config",
-		Short: "Dumps the current config to stdout.",
+	showConfigCmd := &cobra.Command{
+		Use:   "show-config",
+		Short: "Shows the current configuration.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return DumpConfigHlc(appConfig)
+			return showConfigHlc(appConfig)
 		},
 	}
-	rootCmd.AddCommand(dumpConfigCmd)
+	rootCmd.AddCommand(showConfigCmd)
 
 	/* show-defaults */
 	ShowDefaultsCmd := &cobra.Command{

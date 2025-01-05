@@ -24,11 +24,19 @@ func validateConfigHlc(config *AppConfig) error {
 	return nil
 }
 
-func DumpConfigHlc(config *AppConfig) error {
+func showConfigHlc(config *AppConfig) error {
+	var content [][]string
+	width := []int{0, 0, 0}
 
 	m, order := structToMap(*config)
-	for _, v := range order {
-		fmt.Printf("%v=%v [%s]\n", v, m[v], appConfigSourceMap[v])
+	fmt.Println()
+	fmt.Printf("--> Applikationsconfigfile %s\n", AppConfigFilePath)
+	contentAppConfig := make([][]string, len(order))
+	for i, v := range order {
+		width[0] = max(width[0], len(v))
+		width[1] = max(width[1], len(m[v]))
+		width[2] = max(width[2], len(appConfigSourceMap[v]))
+		contentAppConfig[i] = []string{v, m[v], appConfigSourceMap[v]}
 	}
 
 	store, err := makeCheckDefinitionFileStore(*config)
@@ -41,6 +49,32 @@ func DumpConfigHlc(config *AppConfig) error {
 		slog.Error("Failed to load CheckDefinitions from Disk", "error", err)
 		return err
 	}
+	for fileName, checkDefinition := range store.CheckDefinitions {
+		m, order = structToMap(checkDefinition)
+		for _, v := range order {
+			width[0] = max(width[0], len(v))
+			width[1] = max(width[1], len(m[v]))
+			width[2] = max(width[2], len(store.CheckDefinitionSources[fileName][v]))
+		}
+	}
+
+	sort2DSlice(contentAppConfig)
+	printSimpleTableWithWidth([]string{"Key", "Value", "Source"}, contentAppConfig, width)
+	fmt.Println()
+
+	for fileName, checkDefinition := range store.CheckDefinitions {
+		m, order = structToMap(checkDefinition)
+		fmt.Printf("--> CheckDefinition %s\n", store.directory+"/"+fileName)
+		content = make([][]string, len(order))
+		for i, v := range order {
+			content[i] = []string{v, m[v], store.CheckDefinitionSources[fileName][v]}
+		}
+		sort2DSlice(content)
+		printSimpleTable([]string{"Key", "Value", "Source"}, content)
+		fmt.Println()
+
+	}
+
 	return nil
 }
 
@@ -164,6 +198,28 @@ func sort2DSlice(content [][]string) {
 		// both slices len() > 0, so can test this now:
 		return content[i][0] < content[j][0]
 	})
+}
+
+func printSimpleTableWithWidth(header []string, content [][]string, columnWidths []int) {
+	// Print the header
+	for i, col := range header {
+		fmt.Printf("%-*s ", columnWidths[i], col)
+	}
+	fmt.Println()
+
+	// Print an underline for the header
+	for _, width := range columnWidths {
+		fmt.Printf("%s ", strings.Repeat("-", width))
+	}
+	fmt.Println()
+
+	// Print each row of content
+	for _, row := range content {
+		for i, cell := range row {
+			fmt.Printf("%-*s ", columnWidths[i], cell)
+		}
+		fmt.Println()
+	}
 }
 
 func printSimpleTable(header []string, content [][]string) {

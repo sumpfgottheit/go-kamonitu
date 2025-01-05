@@ -107,7 +107,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 			c.CheckDefinitionSources[file.Name()][key] = value
 		}
 		for key, _ := range iniFileMap {
-			c.CheckDefinitionSources[file.Name()][key] = "check-definition-ini"
+			c.CheckDefinitionSources[file.Name()][key] = file.Name()
 		}
 		for key, value := range checkDefinitionDefaultsMap {
 			if _, ok := iniFileMap[key]; !ok {

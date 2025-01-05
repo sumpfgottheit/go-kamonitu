@@ -18,8 +18,9 @@ type AppConfig struct {
 	LogLevel                           string `db:"log_level" validation:"oneOf(debug,info,warn,error)"`
 	IntervalSecondsBetweenMainLoopRuns int    `db:"interval_seconds_between_main_loop_runs" validation:"within(1,60)"`
 	CheckDefinitionsDir                string `db:"check_definitions_dir" validation:"readableDirectory"`
-	configFilePath                     string
 }
+
+var AppConfigFilePath string
 
 var appConfigDefaultMap = map[string]string{
 	"var_dir":    "/var/lib/kamonitu",
@@ -65,7 +66,6 @@ func makeAppConfig(path string) (*AppConfig, error) {
 		return nil, err
 	}
 	slog.Info("Parsed ini file to struct.", "path", path, "appconfig", appconfig)
-	appconfig.configFilePath = path
 
 	appconfig.CheckDefinitionsDir = appconfig.ConfigDir + "/check_definitions"
 	if err = ValidateStruct(appconfig); err != nil {
