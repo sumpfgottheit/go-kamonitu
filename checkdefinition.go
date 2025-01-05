@@ -28,8 +28,7 @@ var checkDefinitionDefaultsSourceMap = map[string]string{
 
 type CheckDefinition struct {
 	CheckCommand                      string `db:"check_command" ini:"required"`
-	DefinitionFilePath                string `db:"definition_file_path" ini:"not_allowed"`
-	IntervalSecondsBetweenChecks      int    `db:"interval_seconds_between_checks" validation:"within(1,3600)"`
+	IntervalSecondsBetweenChecks      int    `db:"interval_seconds_between_checks" validation:"within(5,3600)"`
 	DelaySecondsBeforeFirstCheck      int    `db:"delay_seconds_before_first_check" validation:"within(0,600)"`
 	TimeoutSeconds                    int    `db:"timeout_seconds" validation:"within(1,120)"`
 	StopCheckingAfterNumberOfTimeouts int    `db:"stop_checking_after_number_of_timeouts" validation:"within(1,10)"`
@@ -43,6 +42,12 @@ type CheckDefinitionFileStore struct {
 
 // LoadCheckDefinitionDefaults loads default check definition settings from a specified INI file and updates the current configuration.
 func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile string) error {
+
+	checkDefinitionDefaultsMap = make(map[string]string, len(hardCodedcheckDefinitionDefaultsMap))
+	for key, value := range hardCodedcheckDefinitionDefaultsMap {
+		checkDefinitionDefaultsMap[key] = value
+	}
+
 	slog.Info("Loading check definition defaults from disk.", "checkDefaultsFile", checkDefaultsFile)
 	_, err := os.Stat(checkDefaultsFile)
 	if err != nil {
@@ -63,12 +68,9 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile
 		checkDefinitionDefaultsSourceMap[key] = "default-ini"
 	}
 
-	checkDefinitionDefaultsMap = make(map[string]string, len(hardCodedcheckDefinitionDefaultsMap))
-	for key, value := range hardCodedcheckDefinitionDefaultsMap {
+	for key, _ := range hardCodedcheckDefinitionDefaultsMap {
 		if newKey, ok := checkDefinitionsDefaultMapFromFile[key]; ok {
 			checkDefinitionDefaultsMap[key] = newKey
-		} else {
-			checkDefinitionDefaultsMap[key] = value
 		}
 	}
 	return nil
@@ -107,11 +109,17 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		for key, _ := range iniFileMap {
 			c.CheckDefinitionSources[file.Name()][key] = "check-definition-ini"
 		}
+		for key, value := range checkDefinitionDefaultsMap {
+			if _, ok := iniFileMap[key]; !ok {
+				iniFileMap[key] = value
+			}
+		}
 
 		var checkDefinitionContent *CheckDefinition
 		checkDefinitionContent, err = ParseStringMapToStruct(iniFileMap, CheckDefinition{})
 		if err != nil {
 			slog.Error("Could not parse ini file to Struct", "file", path)
+			return err
 		}
 
 		err = ValidateStruct(checkDefinitionContent)

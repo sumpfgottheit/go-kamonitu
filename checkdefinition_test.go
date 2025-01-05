@@ -57,12 +57,12 @@ func TestMakeCheckDefinitionFileStore(t *testing.T) {
 	assert.Equal(t, len(store.CheckDefinitions), 2)
 	assert.Equal(t, store.CheckDefinitions["swap.ini"].CheckCommand, "/usr/bin/check_swap -w 10% -c 5%")
 	assert.Equal(t, store.CheckDefinitions["swap.ini"].DelaySecondsBeforeFirstCheck, 10)
-	assert.Equal(t, store.CheckDefinitions["swap.ini"].IntervalSecondsBetweenChecks, 30)
+	assert.Equal(t, store.CheckDefinitions["swap.ini"].IntervalSecondsBetweenChecks, 120)
 	assert.Equal(t, store.CheckDefinitions["swap.ini"].TimeoutSeconds, 60)
 
 	assert.Equal(t, store.CheckDefinitions["cpu.ini"].CheckCommand, "/usr/bin/check_cpu -w 50% -c 75%")
 	assert.Equal(t, store.CheckDefinitions["cpu.ini"].DelaySecondsBeforeFirstCheck, 0)
-	assert.Equal(t, store.CheckDefinitions["cpu.ini"].IntervalSecondsBetweenChecks, 30)
+	assert.Equal(t, store.CheckDefinitions["cpu.ini"].IntervalSecondsBetweenChecks, 120)
 	assert.Equal(t, store.CheckDefinitions["cpu.ini"].TimeoutSeconds, 60)
 
 	checks["swap.ini"]["timeout_seconds"] = "nix"

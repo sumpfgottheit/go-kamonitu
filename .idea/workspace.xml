@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`.">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Refactor configuration management and enhance CLI commands&#10;&#10;Reorganized configuration handling by introducing `appConfigDefaultMap` and improving validation logic. Added `show-defaults` and `describe-configfiles` commands to the CLI for better usability and clarity. Simplified and extended the handling of defaults and configuration overrides.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkdefinition_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +62,8 @@
     "Go Test.TestReadIniFile/double_equals_sign in go-kamonitu.executor": "Run",
     "Go Test.TestReadIniFile/empty_ini_file in go-kamonitu.executor": "Run",
     "Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu.executor": "Run",
-    "Go Test.go test go-kamonitu.executor": "Run",
+    "Go Test.checkdefinition_test.go.executor": "Run",
+    "Go Test.go test go-kamonitu.executor": "Debug",
     "Go Test.inifile_test.go.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -85,7 +85,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.describe-configfiles">
+  <component name="RunManager" selected="Go Test.checkdefinition_test.go">
     <configuration name="describe-configfiles" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
@@ -228,17 +228,6 @@
       <pattern value="^\QTestLoadDefinitionsFilesMtimeMapInvalidDirectory\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-kamonitu" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="go-kamonitu" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestLoadDefinitionsFilesMtimeMap\E$/^\QInvalid_directory\E$" />
-      <method v="2" />
-    </configuration>
     <configuration name="TestMakeCheckDefinitionFileStore in go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
@@ -248,6 +237,15 @@
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
       <pattern value="^\QTestMakeCheckDefinitionFileStore\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="checkdefinition_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/checkdefinition_test.go" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="go test go-kamonitu" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
@@ -271,19 +269,19 @@
       <item itemvalue="Go Build.describe-configfiles" />
       <item itemvalue="Go Build.wip" />
       <item itemvalue="Go Test.go test go-kamonitu" />
+      <item itemvalue="Go Test.checkdefinition_test.go" />
       <item itemvalue="Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu" />
       <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu" />
-      <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu" />
       <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu" />
       <item itemvalue="Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.checkdefinition_test.go" />
         <item itemvalue="Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu" />
         <item itemvalue="Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu" />
         <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu" />
         <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu" />
-        <item itemvalue="Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu" />
       </list>
     </recent_temporary>
   </component>
@@ -300,10 +298,22 @@
     <MESSAGE value="ParseStringMapToStruct with tests" />
     <MESSAGE value="Wieder was umgebaut" />
     <MESSAGE value="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`." />
+    <MESSAGE value="Refactor configuration management and enhance CLI commands&#10;&#10;Reorganized configuration handling by introducing `appConfigDefaultMap` and improving validation logic. Added `show-defaults` and `describe-configfiles` commands to the CLI for better usability and clarity. Simplified and extended the handling of defaults and configuration overrides." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor configuration management and enhance CLI commands&#10;&#10;Reorganized configuration handling by introducing `appConfigDefaultMap` and improving validation logic. Added `show-defaults` and `describe-configfiles` commands to the CLI for better usability and clarity. Simplified and extended the handling of defaults and configuration overrides." />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/checkdefinition_test.go</url>
+          <line>51</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/go_kamonitu$validate_config.out" NAME="validate-config Coverage Results" MODIFIED="1735994560573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

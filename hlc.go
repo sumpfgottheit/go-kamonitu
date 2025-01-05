@@ -69,14 +69,14 @@ func ShowDefaultsHlc(config *AppConfig) error {
 	}
 
 	fmt.Println()
-	fmt.Println("--> Effective Defaults für die Check Defintition")
+	fmt.Println("--> Effective Defaults für die Check Definitionen")
 	keys = sortedKeys(checkDefinitionDefaultsMap)
 	for _, key := range keys {
 		fmt.Printf("%-*s = %v\n", longest_key, key, checkDefinitionDefaultsMap[key])
 	}
 
 	fmt.Println()
-	fmt.Println("--> Defaults für die Check Defintition aus /etc/kamonitu/check_defaults.ini")
+	fmt.Println("--> Defaults für die Check Definitionen aus /etc/kamonitu/check_defaults.ini")
 	keys = sortedKeys(checkDefinitionsDefaultMapFromFile)
 	for _, key := range keys {
 		fmt.Printf("%-*s = %v\n", longest_key, key, checkDefinitionsDefaultMapFromFile[key])
