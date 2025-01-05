@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Wieder was umgebaut">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inifile.go" beforeDir="false" afterPath="$PROJECT_DIR$/inifile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,8 +39,10 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
+    "Go Build.describe-configfiles.executor": "Run",
     "Go Build.dump-config.executor": "Run",
     "Go Build.go build go-kamonitu.executor": "Run",
+    "Go Build.show-defaults.executor": "Run",
     "Go Build.validate-config.executor": "Run",
     "Go Build.wip.executor": "Run",
     "Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu.executor": "Debug",
@@ -81,11 +85,53 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.dump-config">
+  <component name="RunManager" selected="Go Build.describe-configfiles">
+    <configuration name="describe-configfiles" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <parameters value="describe-configfiles" />
+      <envs>
+        <env name="KAMONITU_DEBUG" value="1" />
+        <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
+      </envs>
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.GolandRunConfigurationExtension">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="GoBeforeRunTask" command="fmt" />
+        <option name="GoBeforeRunTask" command="vet" />
+      </method>
+    </configuration>
     <configuration name="dump-config" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
       <parameters value="dump-config" />
+      <envs>
+        <env name="KAMONITU_DEBUG" value="1" />
+        <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
+      </envs>
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.GolandRunConfigurationExtension">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="GoBeforeRunTask" command="fmt" />
+        <option name="GoBeforeRunTask" command="vet" />
+      </method>
+    </configuration>
+    <configuration name="show-defaults" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <parameters value="show-defaults" />
       <envs>
         <env name="KAMONITU_DEBUG" value="1" />
         <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
@@ -221,6 +267,8 @@
     <list>
       <item itemvalue="Go Build.validate-config" />
       <item itemvalue="Go Build.dump-config" />
+      <item itemvalue="Go Build.show-defaults" />
+      <item itemvalue="Go Build.describe-configfiles" />
       <item itemvalue="Go Build.wip" />
       <item itemvalue="Go Test.go test go-kamonitu" />
       <item itemvalue="Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu" />
@@ -251,21 +299,11 @@
     <MESSAGE value="Weiter gehts" />
     <MESSAGE value="ParseStringMapToStruct with tests" />
     <MESSAGE value="Wieder was umgebaut" />
-    <option name="LAST_COMMIT_MESSAGE" value="Wieder was umgebaut" />
+    <MESSAGE value="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`." />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/main.go</url>
-          <line>38</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/go_kamonitu$validate_config.out" NAME="validate-config Coverage Results" MODIFIED="1735994560573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

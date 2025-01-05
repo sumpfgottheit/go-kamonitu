@@ -78,6 +78,11 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 			return nil, fmt.Errorf("field %v not found in struct", fieldName)
 		}
 		iniKey := field.Tag.Get("db")
+		initTag := field.Tag.Get("ini")
+		if initTag == "not_allowed" {
+			slog.Error("ini file contains keys that are not allowed in the struct", "key", iniKey)
+			return nil, fmt.Errorf("ini file contains keys that are not allowed in the struct: %v", iniKey)
+		}
 
 		// Check if iniKey exists in the map
 		if value, exists := iniMap[iniKey]; exists {

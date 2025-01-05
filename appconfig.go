@@ -12,9 +12,9 @@ const (
 )
 
 type AppConfig struct {
-	VarDir                             string `db:"var_dir" ini:"required" validation:"writeableDirectory"`
-	ConfigDir                          string `db:"config_dir" ini:"required" validation:"readableDirectory"`
-	LogDir                             string `db:"log_dir" ini:"required" validation:"writeableDirectory"`
+	VarDir                             string `db:"var_dir" validation:"writeableDirectory"`
+	ConfigDir                          string `db:"config_dir" validation:"readableDirectory"`
+	LogDir                             string `db:"log_dir" validation:"writeableDirectory"`
 	LogLevel                           string `db:"log_level" validation:"oneOf(debug,info,warn,error)"`
 	IntervalSecondsBetweenMainLoopRuns int    `db:"interval_seconds_between_main_loop_runs" validation:"within(1,60)"`
 	CheckDefinitionsDir                string `db:"check_definitions_dir" validation:"readableDirectory"`

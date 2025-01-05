@@ -76,6 +76,26 @@ func main() {
 	}
 	rootCmd.AddCommand(dumpConfigCmd)
 
+	/* show-defaults */
+	ShowDefaultsCmd := &cobra.Command{
+		Use:   "show-defaults",
+		Short: "Show the defaults",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return ShowDefaultsHlc(appConfig)
+		},
+	}
+	rootCmd.AddCommand(ShowDefaultsCmd)
+
+	/* describe-configfile */
+	DescribeConfigsFilesCmd := &cobra.Command{
+		Use:   "describe-configfiles",
+		Short: "Beschreibung der Konfigurationsdateien",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return DescribeConfigFilesHlc(appConfig)
+		},
+	}
+	rootCmd.AddCommand(DescribeConfigsFilesCmd)
+
 	wipCmd := &cobra.Command{
 		Use:   "wip",
 		Short: "WIP",

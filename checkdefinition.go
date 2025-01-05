@@ -10,12 +10,14 @@ const (
 	checkDefinitionDefaultsFileName = "check_defaults.ini"
 )
 
-var checkDefinitionDefaultsMap = map[string]string{
-	"interval_seconds_between_checks":        "60",
+var hardCodedcheckDefinitionDefaultsMap = map[string]string{
+	"interval_seconds_between_checks":        "120",
 	"delay_seconds_before_first_check":       "0",
 	"timeout_seconds":                        "60",
 	"stop_checking_after_number_of_timeouts": "3",
 }
+var checkDefinitionsDefaultMapFromFile map[string]string
+var checkDefinitionDefaultsMap map[string]string
 
 var checkDefinitionDefaultsSourceMap = map[string]string{
 	"interval_seconds_between_checks":        "hardcoded",
@@ -26,11 +28,11 @@ var checkDefinitionDefaultsSourceMap = map[string]string{
 
 type CheckDefinition struct {
 	CheckCommand                      string `db:"check_command" ini:"required"`
-	DefinitionFilePath                string `db:"definition_file_path"`
-	IntervalSecondsBetweenChecks      int    `db:"interval_seconds_between_checks"`
-	DelaySecondsBeforeFirstCheck      int    `db:"delay_seconds_before_first_check"`
-	TimeoutSeconds                    int    `db:"timeout_seconds"`
-	StopCheckingAfterNumberOfTimeouts int    `db:"stop_checking_after_number_of_timeouts"`
+	DefinitionFilePath                string `db:"definition_file_path" ini:"not_allowed"`
+	IntervalSecondsBetweenChecks      int    `db:"interval_seconds_between_checks" validation:"within(1,3600)"`
+	DelaySecondsBeforeFirstCheck      int    `db:"delay_seconds_before_first_check" validation:"within(0,600)"`
+	TimeoutSeconds                    int    `db:"timeout_seconds" validation:"within(1,120)"`
+	StopCheckingAfterNumberOfTimeouts int    `db:"stop_checking_after_number_of_timeouts" validation:"within(1,10)"`
 }
 
 type CheckDefinitionFileStore struct {
@@ -55,10 +57,18 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile
 	}
 	slog.Info("Parsed ini file.", "path", checkDefaultsFile, "iniFileMap", iniFileMap)
 
-	for key, _ := range checkDefinitionDefaultsMap {
-		if newKey, ok := iniFileMap[key]; ok {
+	checkDefinitionsDefaultMapFromFile = make(map[string]string)
+	for key, value := range iniFileMap {
+		checkDefinitionsDefaultMapFromFile[key] = value
+		checkDefinitionDefaultsSourceMap[key] = "default-ini"
+	}
+
+	checkDefinitionDefaultsMap = make(map[string]string, len(hardCodedcheckDefinitionDefaultsMap))
+	for key, value := range hardCodedcheckDefinitionDefaultsMap {
+		if newKey, ok := checkDefinitionsDefaultMapFromFile[key]; ok {
 			checkDefinitionDefaultsMap[key] = newKey
-			checkDefinitionDefaultsSourceMap[key] = "default-ini"
+		} else {
+			checkDefinitionDefaultsMap[key] = value
 		}
 	}
 	return nil
