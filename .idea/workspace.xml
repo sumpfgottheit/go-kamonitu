@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Adjust check intervals and refactor default handling logic&#10;&#10;Updated the default and test values for `IntervalSecondsBetweenChecks` to 120 seconds. Refactored handling of default configurations, improving clarity and reducing redundancy. Fixed minor inconsistencies in log messages and configuration loading logic.">
+    <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="Refactor configuration handling and improve CLI usability&#10;&#10;Renamed `dump-config` to `show-config` and enhanced its display logic for better readability, including tabular formatting. Exposed `AppConfigFilePath` to allow broader access for configuration debugging. Updated CLI commands and internal logic for consistency and improved maintainability.">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/appconfig.go" beforeDir="false" afterPath="$PROJECT_DIR$/appconfig.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
@@ -35,62 +39,90 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "Go Build.describe-configfiles.executor": "Run",
-    "Go Build.dump-config.executor": "Run",
-    "Go Build.go build go-kamonitu.executor": "Run",
-    "Go Build.show-check-definitions.executor": "Run",
-    "Go Build.show-defaults.executor": "Run",
-    "Go Build.validate-config.executor": "Debug",
-    "Go Build.wip.executor": "Run",
-    "Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu.executor": "Debug",
-    "Go Test.TestLoadCheckDefinitionDefaults in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadCheckDefinitionDefaults/Defaults_und_Hardcoded_Defaults_1:1_aber_nur_ein_Paramater_gesetzts in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadCheckDefinitionDefaults/Empty_file#01 in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadCheckDefinitionDefaults/Ungültige_Wert in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadCheckDefinitionDefaults/Ungültiger_Key in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadCheckDefinitionDefaults/Überschreibe_interval_seconds_between_checks in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu.executor": "Run",
-    "Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu.executor": "Debug",
-    "Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu.executor": "Run",
-    "Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu.executor": "Run",
-    "Go Test.TestParseStringMapToStruct in go-kamonitu.executor": "Run",
-    "Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu.executor": "Run",
-    "Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu.executor": "Debug",
-    "Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu.executor": "Run",
-    "Go Test.TestReadIniFile/double_equals_sign in go-kamonitu.executor": "Run",
-    "Go Test.TestReadIniFile/empty_ini_file in go-kamonitu.executor": "Run",
-    "Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu.executor": "Run",
-    "Go Test.checkdefinition_test.go.executor": "Run",
-    "Go Test.go test go-kamonitu.executor": "Run",
-    "Go Test.inifile_test.go.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/home/saf/devel/go-kamonitu",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.describe-configfiles.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.dump-config.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.run.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.show-check-definitions.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.show-config.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.show-defaults.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.validate-config.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.wip.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Test.TestLoadCheckDefinitionDefaults in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadCheckDefinitionDefaults/Defaults_und_Hardcoded_Defaults_1:1_aber_nur_ein_Paramater_gesetzts in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadCheckDefinitionDefaults/Empty_file#01 in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadCheckDefinitionDefaults/Ungültige_Wert in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadCheckDefinitionDefaults/Ungültiger_Key in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadCheckDefinitionDefaults/Überschreibe_interval_seconds_between_checks in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadDefinitionsFilesMtimeMap in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestLoadDefinitionsFilesMtimeMap/Invalid_directory in go-kamonitu.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Test.TestLoadDefinitionsFilesMtimeMapInvalidDirectory in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestMakeCheckDefinitionFileStore in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestParseStringMapToStruct in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestParseStringMapToStruct/invalid_int_value_in_map in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestParseStringMapToStruct/valid_mapping_to_struct in go-kamonitu.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Test.TestReadIniFile/Keys_with_whitespace in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestReadIniFile/double_equals_sign in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestReadIniFile/empty_ini_file in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestReadIniFile/missing_equals_sign in go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.checkdefinition_test.go.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.go test go-kamonitu.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.inifile_test.go.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/saf/devel/go-kamonitu&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="GoMoveDeclarationDialog.RECENT_KEY">
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.show-config">
+  <component name="RunManager" selected="Go Build.run">
     <configuration name="describe-configfiles" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
       <parameters value="describe-configfiles" />
+      <envs>
+        <env name="KAMONITU_DEBUG" value="1" />
+        <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
+      </envs>
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.GolandRunConfigurationExtension">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <kind value="PACKAGE" />
+      <package value="go-kamonitu" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="GoBeforeRunTask" command="fmt" />
+        <option name="GoBeforeRunTask" command="vet" />
+      </method>
+    </configuration>
+    <configuration name="run" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="go-kamonitu" />
+      <working_directory value="$PROJECT_DIR$" />
+      <parameters value="run" />
       <envs>
         <env name="KAMONITU_DEBUG" value="1" />
         <env name="KAMONITU_CONFIG_FILE" value="_working_dir/etc/kamonitu/kamonitu.ini" />
@@ -265,6 +297,7 @@
     </configuration>
     <list>
       <item itemvalue="Go Build.validate-config" />
+      <item itemvalue="Go Build.run" />
       <item itemvalue="Go Build.show-config" />
       <item itemvalue="Go Build.show-defaults" />
       <item itemvalue="Go Build.describe-configfiles" />
@@ -290,6 +323,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="soviel" />
     <MESSAGE value="Korrektes Erkennen von Parametern und Env-Variablen" />
@@ -301,7 +345,8 @@
     <MESSAGE value="Refactor configuration management and improve loading logic&#10;&#10;Replace `appConfigMap` with `appConfigDefaultMap` to separate defaults from runtime values. Initialize `appConfigMap` dynamically and update logic for loading and overriding configuration values. Enhance check definition handling by adding a dedicated map and loading mechanism in `hlc.go`." />
     <MESSAGE value="Refactor configuration management and enhance CLI commands&#10;&#10;Reorganized configuration handling by introducing `appConfigDefaultMap` and improving validation logic. Added `show-defaults` and `describe-configfiles` commands to the CLI for better usability and clarity. Simplified and extended the handling of defaults and configuration overrides." />
     <MESSAGE value="Adjust check intervals and refactor default handling logic&#10;&#10;Updated the default and test values for `IntervalSecondsBetweenChecks` to 120 seconds. Refactored handling of default configurations, improving clarity and reducing redundancy. Fixed minor inconsistencies in log messages and configuration loading logic." />
-    <option name="LAST_COMMIT_MESSAGE" value="Adjust check intervals and refactor default handling logic&#10;&#10;Updated the default and test values for `IntervalSecondsBetweenChecks` to 120 seconds. Refactored handling of default configurations, improving clarity and reducing redundancy. Fixed minor inconsistencies in log messages and configuration loading logic." />
+    <MESSAGE value="Refactor configuration handling and improve CLI usability&#10;&#10;Renamed `dump-config` to `show-config` and enhanced its display logic for better readability, including tabular formatting. Exposed `AppConfigFilePath` to allow broader access for configuration debugging. Updated CLI commands and internal logic for consistency and improved maintainability." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor configuration handling and improve CLI usability&#10;&#10;Renamed `dump-config` to `show-config` and enhanced its display logic for better readability, including tabular formatting. Exposed `AppConfigFilePath` to allow broader access for configuration debugging. Updated CLI commands and internal logic for consistency and improved maintainability." />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

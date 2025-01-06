@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"log/slog"
-	"reflect"
-	"sort"
-	"strings"
 )
 
 func validateConfigHlc(config *AppConfig) error {
@@ -59,7 +56,7 @@ func showConfigHlc(config *AppConfig) error {
 	}
 
 	sort2DSlice(contentAppConfig)
-	printSimpleTableWithWidth([]string{"Key", "Value", "Source"}, contentAppConfig, width)
+	PrintSimpleTableWithWidth([]string{"Key", "Value", "Source"}, contentAppConfig, width)
 	fmt.Println()
 
 	for fileName, checkDefinition := range store.CheckDefinitions {
@@ -185,181 +182,12 @@ func DescribeConfigFilesHlc(appConfig *AppConfig) error {
 	return nil
 }
 
-func sort2DSlice(content [][]string) {
-	sort.Slice(content, func(i, j int) bool {
-		// edge cases
-		if len(content[i]) == 0 && len(content[j]) == 0 {
-			return false // two empty slices - so one is not less than other i.e. false
-		}
-		if len(content[i]) == 0 || len(content[j]) == 0 {
-			return len(content[i]) == 0 // empty slice listed "first" (change to != 0 to put them last)
-		}
-
-		// both slices len() > 0, so can test this now:
-		return content[i][0] < content[j][0]
-	})
-}
-
-func printSimpleTableWithWidth(header []string, content [][]string, columnWidths []int) {
-	// Print the header
-	for i, col := range header {
-		fmt.Printf("%-*s ", columnWidths[i], col)
-	}
-	fmt.Println()
-
-	// Print an underline for the header
-	for _, width := range columnWidths {
-		fmt.Printf("%s ", strings.Repeat("-", width))
-	}
-	fmt.Println()
-
-	// Print each row of content
-	for _, row := range content {
-		for i, cell := range row {
-			fmt.Printf("%-*s ", columnWidths[i], cell)
-		}
-		fmt.Println()
-	}
-}
-
-func printSimpleTable(header []string, content [][]string) {
-	// Calculate column widths based on header and content
-	columnWidths := make([]int, len(header))
-	for i, col := range header {
-		columnWidths[i] = len(col)
-	}
-	for _, row := range content {
-		for i, cell := range row {
-			if len(cell) > columnWidths[i] {
-				columnWidths[i] = len(cell)
-			}
-		}
+func RunHlc(appConfig *AppConfig) error {
+	err := migrateDatabase(appConfig.DbFile())
+	if err != nil {
+		slog.Error("Error running database migrations", "err", err)
+		return err
 	}
 
-	// Print the header
-	for i, col := range header {
-		fmt.Printf("%-*s ", columnWidths[i], col)
-	}
-	fmt.Println()
-
-	// Print an underline for the header
-	for _, width := range columnWidths {
-		fmt.Printf("%s ", strings.Repeat("-", width))
-	}
-	fmt.Println()
-
-	// Print each row of content
-	for _, row := range content {
-		for i, cell := range row {
-			fmt.Printf("%-*s ", columnWidths[i], cell)
-		}
-		fmt.Println()
-	}
-}
-
-func structToMap(s interface{}) (result map[string]string, orderedFieldName []string) {
-	result = make(map[string]string)
-
-	val := reflect.ValueOf(s)
-	if val.Kind() == reflect.Ptr {
-		val = val.Elem()
-	}
-	fieldNames := getFieldNamesForStruct(s)
-
-	typ := val.Type()
-	for _, fieldName := range fieldNames {
-		field, _ := typ.FieldByName(fieldName)
-		ini_key := field.Tag.Get("db")
-		if ini_key == "" {
-			continue
-		}
-		iniMapFieldName := camelCaseToSnakeCase(fieldName)
-		fieldValue := val.FieldByName(field.Name)
-		// Convert field value to string
-		result[iniMapFieldName] = fmt.Sprintf("%v", fieldValue.Interface())
-	}
-
-	orderedFieldName = make([]string, len(fieldNames))
-	for i, v := range fieldNames {
-		orderedFieldName[i] = camelCaseToSnakeCase(v)
-	}
-	return result, orderedFieldName
-}
-
-func camelCaseToSnakeCase(s string) string {
-	var result string
-
-	for i, v := range s {
-		if i > 0 && v >= 'A' && v <= 'Z' {
-			result += "_"
-		}
-
-		result += string(v)
-	}
-
-	return strings.ToLower(result)
-
-}
-
-// getFieldNamesForStruct retrieves all field names of a struct, including those from embedded structs.
-func getFieldNamesForStruct(s interface{}) []string {
-	var fieldNames []string
-	typ := reflect.TypeOf(s)
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
-	for i := 0; i < typ.NumField(); i++ {
-		field := typ.Field(i)
-		if field.Anonymous {
-			// Recursively get fields from embedded structs
-			embeddedFields := getFieldNamesForStruct(reflect.New(field.Type).Interface())
-			fieldNames = append(fieldNames, embeddedFields...)
-		} else {
-			fieldNames = append(fieldNames, field.Name)
-		}
-	}
-	return fieldNames
-}
-
-func sortedKeys(m map[string]string) []string {
-	keys := make([]string, 0, len(m))
-	for key := range m {
-		keys = append(keys, key)
-	}
-
-	sort.Strings(keys)
-	return keys
-}
-
-func getStructTags(input interface{}, tags []string) map[string]map[string]string {
-
-	// Get the type of the input
-	t := reflect.TypeOf(input)
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
-
-	if t.Kind() != reflect.Struct {
-		return nil // Not a struct
-	}
-
-	// Iterate over the fields
-	result := make(map[string]map[string]string, t.NumField())
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		fieldTags := make(map[string]string)
-
-		// Extract tags from each field
-		for _, key := range tags { // Add more tag keys if needed
-			tagValue := field.Tag.Get(key)
-			if tagValue != "" {
-				fieldTags[key] = tagValue
-			}
-		}
-
-		// Add to the result map
-		result[field.Name] = fieldTags
-	}
-
-	return result
+	return nil
 }

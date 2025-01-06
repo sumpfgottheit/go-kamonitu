@@ -97,6 +97,17 @@ func main() {
 	}
 	rootCmd.AddCommand(DescribeConfigsFilesCmd)
 
+	/* run */
+	RunCmd := &cobra.Command{
+		Use:     "start",
+		Aliases: []string{"run"},
+		Short:   "Starte Kamonitu",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return RunHlc(appConfig)
+		},
+	}
+	rootCmd.AddCommand(RunCmd)
+
 	wipCmd := &cobra.Command{
 		Use:   "wip",
 		Short: "WIP",

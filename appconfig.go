@@ -20,6 +20,10 @@ type AppConfig struct {
 	CheckDefinitionsDir                string `db:"check_definitions_dir" validation:"readableDirectory"`
 }
 
+func (c *AppConfig) DbFile() string {
+	return c.VarDir + "/kamonitu.db"
+}
+
 var AppConfigFilePath string
 
 var appConfigDefaultMap = map[string]string{
