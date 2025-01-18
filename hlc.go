@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/hashicorp/go-multierror"
 	"log/slog"
 )
 
@@ -194,5 +195,16 @@ func RunHlc(config *AppConfig) error {
 	}
 	err = store.LoadCheckDefinitionsFromDisk()
 	slog.Info("Loaded Check Definitions", "count", len(store.CheckDefinitions))
+	if err != nil {
+		if merr, ok := err.(*multierror.Error); ok {
+			for _, individualErr := range merr.Errors {
+				slog.Warn("Error in check definition - Write it as failed check into database", "error", individualErr)
+			}
+		}
+	}
+	if len(store.CheckDefinitions) == 0 {
+		slog.Warn("No Check Definitions found")
+		return fmt.Errorf("no check definitions found")
+	}
 	return nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/hashicorp/go-multierror"
 	"log/slog"
 	"os"
 )
@@ -79,6 +80,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile
 // LoadCheckDefinitionsFromDisk loads check definitions from .ini files in the directory and parses their contents into structs.
 // Fills the slice checkDefinitions
 func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
+	var errors *multierror.Error
 	slog.Info("Loading check files from disk.", "directory", c.directory)
 	files, err := os.ReadDir(c.directory)
 	if err != nil {
@@ -98,7 +100,8 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		iniFileMap, err = readIniFile(path)
 		if err != nil {
 			slog.Error("iniFile could not be read", "file", path)
-			return err
+			errors = multierror.Append(errors, err)
+			continue
 		}
 
 		c.CheckDefinitionSources[file.Name()] = make(map[string]string, 10)
@@ -118,18 +121,20 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		checkDefinitionContent, err = ParseStringMapToStruct(iniFileMap, CheckDefinition{})
 		if err != nil {
 			slog.Error("Could not parse ini file to Struct", "file", path)
-			return fmt.Errorf("error parsing ini file '%s' to struct: %v", path, err)
+			errors = multierror.Append(errors, fmt.Errorf("error parsing ini file '%s' to struct: %v", path, err))
+			continue
 		}
 
 		err = ValidateStruct(checkDefinitionContent)
 		if err != nil {
-			return err
+			errors = multierror.Append(errors, fmt.Errorf("error validating struct: %v", err))
+			continue
 		}
 		slog.Info("Parsed ini file.", "file", path, "content", checkDefinitionContent)
 		c.CheckDefinitions[file.Name()] = *checkDefinitionContent
 	}
 
-	return nil
+	return errors.ErrorOrNil()
 }
 
 // makeCheckDefinitionFileStore initializes and returns a CheckDefinitionFileStore with defaults loaded from a file or hardcoded values.

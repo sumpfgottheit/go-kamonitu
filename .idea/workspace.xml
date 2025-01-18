@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f22acf0-5eca-4652-b5f1-5c103ad65161" name="Changes" comment="add migrations with dbmate">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/checkdefinition.go" beforeDir="false" afterPath="$PROJECT_DIR$/checkdefinition.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hlc.go" beforeDir="false" afterPath="$PROJECT_DIR$/hlc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations.go" beforeDir="false" afterPath="$PROJECT_DIR$/migrations.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +58,7 @@
     "Go Build.show-check-definitions.executor": "Run",
     "Go Build.show-config.executor": "Run",
     "Go Build.show-defaults.executor": "Run",
-    "Go Build.validate-config.executor": "Run",
+    "Go Build.validate-config.executor": "Debug",
     "Go Build.wip.executor": "Run",
     "Go Test.TestGetFieldNamesForStruct/empty_struct in go-kamonitu.executor": "Debug",
     "Go Test.TestLoadCheckDefinitionDefaults in go-kamonitu.executor": "Run",
@@ -95,7 +94,7 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode"
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -111,7 +110,7 @@
       <recent name="$PROJECT_DIR$/_working_dir/etc/kamonitu/check_definitions" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.run">
+  <component name="RunManager" selected="Go Build.validate-config">
     <configuration name="describe-configfiles" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-kamonitu" />
       <working_directory value="$PROJECT_DIR$" />
