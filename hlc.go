@@ -182,12 +182,17 @@ func DescribeConfigFilesHlc(appConfig *AppConfig) error {
 	return nil
 }
 
-func RunHlc(appConfig *AppConfig) error {
-	err := migrateDatabase(appConfig.DbFile())
+func RunHlc(config *AppConfig) error {
+	err := migrateDatabase(config.DbFile())
 	if err != nil {
 		slog.Error("Error running database migrations", "err", err)
 		return err
 	}
-
+	store, err := makeCheckDefinitionFileStore(*config)
+	if err != nil {
+		return err
+	}
+	err = store.LoadCheckDefinitionsFromDisk()
+	slog.Info("Loaded Check Definitions", "count", len(store.CheckDefinitions))
 	return nil
 }

@@ -79,7 +79,6 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile
 // LoadCheckDefinitionsFromDisk loads check definitions from .ini files in the directory and parses their contents into structs.
 // Fills the slice checkDefinitions
 func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
-
 	slog.Info("Loading check files from disk.", "directory", c.directory)
 	files, err := os.ReadDir(c.directory)
 	if err != nil {
@@ -119,7 +118,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		checkDefinitionContent, err = ParseStringMapToStruct(iniFileMap, CheckDefinition{})
 		if err != nil {
 			slog.Error("Could not parse ini file to Struct", "file", path)
-			return err
+			return fmt.Errorf("error parsing ini file '%s' to struct: %v", path, err)
 		}
 
 		err = ValidateStruct(checkDefinitionContent)

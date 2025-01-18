@@ -26,9 +26,9 @@ func migrateDatabase(dbpath string) error {
 
 	for _, migration := range migrations {
 		if migration.Applied {
-			slog.Info("Migration already applied", "migration", migration)
+			slog.Info("Migration already applied", "migration", migration.FileName)
 		} else {
-			slog.Info("Applied migration", "migration", migration)
+			slog.Info("Applied migration", "migration", migration.FileName)
 		}
 	}
 
