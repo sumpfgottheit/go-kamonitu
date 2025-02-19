@@ -184,15 +184,18 @@ func DescribeConfigFilesHlc(appConfig *AppConfig) error {
 }
 
 func RunHlc(config *AppConfig) error {
+	// Migrate Database
 	err := migrateDatabase(config.DbFile())
 	if err != nil {
 		slog.Error("Error running database migrations", "err", err)
 		return err
 	}
+	// Create CheckDefinitionStore
 	store, err := makeCheckDefinitionFileStore(*config)
 	if err != nil {
 		return err
 	}
+	// Load CheckDefinitions
 	err = store.LoadCheckDefinitionsFromDisk()
 	slog.Info("Loaded Check Definitions", "count", len(store.CheckDefinitions))
 	if err != nil {
@@ -206,5 +209,21 @@ func RunHlc(config *AppConfig) error {
 		slog.Warn("No Check Definitions found")
 		return fmt.Errorf("no check definitions found")
 	}
+
+	// get Database Connection
+	mydb, err := initDB(config.DbFile())
+	if err != nil {
+		slog.Error("Error initializing database", "err", err)
+		return err
+	}
+	defer closeDB()
+
+	store.db = mydb
+	err = store.ensureCheckDefinitionsInDatabase()
+	if err != nil {
+		slog.Error("Error ensuring check definitions in database", "err", err)
+		return err
+	}
+
 	return nil
 }

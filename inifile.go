@@ -69,7 +69,7 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 	val := reflect.ValueOf(configPointer).Elem()
 
 	// Alles Keys die es in der Map gibt, müssen im Struct vorhanden sein, es können aber auch weniger sein
-	mapKeysUsed := 0
+	iniMapKeys := getKeys(iniMap)
 
 	// Iterate over each field in the struct
 	for _, fieldName := range getFieldNamesForStruct(configInstance) {
@@ -82,11 +82,11 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 
 		// Check if iniKey exists in the map
 		if value, exists := iniMap[iniKey]; exists {
+			iniMapKeys = removeValueFromStringSlice(iniMapKeys, iniKey)
 			if initTag == "not_allowed" {
 				slog.Error("ini file contains keys that are not allowed in the struct", "key", iniKey)
 				return nil, fmt.Errorf("ini file contains keys that are not allowed in the struct: %v", iniKey)
 			}
-			mapKeysUsed++
 			switch field.Type.Kind() {
 			case reflect.Int: // Handle integer fields
 				intValue, err := strconv.Atoi(value)
@@ -102,10 +102,11 @@ func ParseStringMapToStruct[T any](iniMap map[string]string, defaults T) (*T, er
 		}
 	}
 
-	if mapKeysUsed < len(iniMap) {
-		slog.Error("ini file contains keys that are not used in the struct", "keys", getKeys(iniMap)[mapKeysUsed:])
-		return nil, fmt.Errorf("ini file contains keys that are not used in the struct: %v", getKeys(iniMap)[mapKeysUsed:])
+	if len(iniMapKeys) > 0 {
+		slog.Error("ini file contains keys that are not in the struct", "keys", iniMapKeys)
+		return nil, fmt.Errorf("ini file contains keys that are not in the struct: %v", iniMapKeys)
 	}
+
 	return configPointer, nil
 }
 
@@ -132,10 +133,29 @@ func mtimeForFile(filename string) (int64, error) {
 	return fileInfo.ModTime().Unix(), nil
 }
 
-func getKeys(m map[string]string) []string {
-	keys := make([]string, 0, len(m)) // Create a slice with an initial capacity
+func getKeys[K comparable, V any](m map[K]V) []K {
+	keys := make([]K, 0, len(m)) // Create a slice with an initial capacity
 	for k := range m {
 		keys = append(keys, k)
 	}
 	return keys
+}
+
+//func getKeys(m map[string]string) []string {
+//	keys := make([]string, 0, len(m)) // Create a slice with an initial capacity
+//	for k := range m {
+//		keys = append(keys, k)
+//	}
+//	return keys
+//}
+
+func removeValueFromStringSlice(slice []string, valueToRemove string) []string {
+	n := make([]string, 0, len(slice))
+	for _, v := range slice {
+		if v == valueToRemove {
+			continue
+		}
+		n = append(n, v)
+	}
+	return n
 }

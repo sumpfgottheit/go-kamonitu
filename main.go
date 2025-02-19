@@ -114,25 +114,10 @@ func main() {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Printf("WIP\n")
 
-			type User struct {
-				Username string `db:"username"`
-				Age      int    `db:"age"`
-			}
-			f := User{
-				Username: "Max",
-				Age:      25,
-			}
-
-			m := map[string]string{
-				"username": "Max",
-				"age":      "25",
-			}
-
-			result, err := ParseStringMapToStruct(m, f)
-			if err != nil {
-				return err
-			}
-			fmt.Printf("Result: %v\n", result)
+			definition, sources, err := loadSingleCheckDefinitionFromFile("_working_dir/etc/kamonitu/check_definitions/swap.ini")
+			fmt.Println(definition)
+			fmt.Println(sources)
+			fmt.Println(err)
 
 			return nil
 		},
