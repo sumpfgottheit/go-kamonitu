@@ -31,6 +31,8 @@ var checkDefinitionDefaultsSourceMap = map[string]string{
 
 type CheckDefinition struct {
 	CheckCommand                      string `db:"check_command" ini:"required"`
+	ExecuteOnFailure                  string `db:"execute_on_failure"`
+	ExecuteOnTimeout                  string `db:"execute_on_timeout"`
 	IntervalSecondsBetweenChecks      int    `db:"interval_seconds_between_checks" validation:"within(5,3600)"`
 	DelaySecondsBeforeFirstCheck      int    `db:"delay_seconds_before_first_check" validation:"within(0,600)"`
 	TimeoutSeconds                    int    `db:"timeout_seconds" validation:"within(1,120)"`
@@ -141,6 +143,13 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 			continue
 		}
 
+		if file.Name() == "kamonitu.ini" {
+			myerr := fmt.Errorf("Check Definition Filename %q ist nicht erlaubt", file.Name())
+			slog.Error(myerr.Error())
+			errors = multierror.Append(errors, myerr)
+			continue
+		}
+
 		path := c.directory + "/" + file.Name()
 
 		checkDefinition, sources, err := loadSingleCheckDefinitionFromFile(path)
@@ -153,6 +162,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 
 		c.CheckDefinitionSources[file.Name()] = sources
 		c.CheckDefinitions[file.Name()] = *checkDefinition
+
 	}
 
 	return errors.ErrorOrNil()
@@ -198,16 +208,18 @@ func (c *CheckDefinitionFileStore) ensureCheckDefinitionsInDatabase() error {
 	 */
 	for filename, cd := range c.CheckDefinitions {
 		sql := `insert into 
-    				check_definitions(filename, check_command, interval_seconds_between_checks, delay_seconds_before_first_check, timeout_seconds, stop_checking_after_number_of_timeouts) 
-					values(?,?,?,?,?,?)
+    				check_definitions(filename, check_command, execute_on_failure, execute_on_timeout, interval_seconds_between_checks, delay_seconds_before_first_check, timeout_seconds, stop_checking_after_number_of_timeouts) 
+					values(?,?,?,?,?,?,?,?)
 				on conflict(filename) do 
 					update 
 					    set check_command=?, 
+					    execute_on_failure=?,
+					    execute_on_timeout=?,
 					    interval_seconds_between_checks=?, 
 					    delay_seconds_before_first_check=?, 
 					    timeout_seconds=?, 
 					    stop_checking_after_number_of_timeouts=?`
-		_, err := c.db.Exec(sql, filename, cd.CheckCommand, cd.IntervalSecondsBetweenChecks, cd.DelaySecondsBeforeFirstCheck, cd.TimeoutSeconds, cd.StopCheckingAfterNumberOfTimeouts, cd.CheckCommand, cd.IntervalSecondsBetweenChecks, cd.DelaySecondsBeforeFirstCheck, cd.TimeoutSeconds, cd.StopCheckingAfterNumberOfTimeouts)
+		_, err := c.db.Exec(sql, filename, cd.CheckCommand, cd.ExecuteOnFailure, cd.ExecuteOnTimeout, cd.IntervalSecondsBetweenChecks, cd.DelaySecondsBeforeFirstCheck, cd.TimeoutSeconds, cd.StopCheckingAfterNumberOfTimeouts, cd.CheckCommand, cd.ExecuteOnFailure, cd.ExecuteOnTimeout, cd.IntervalSecondsBetweenChecks, cd.DelaySecondsBeforeFirstCheck, cd.TimeoutSeconds, cd.StopCheckingAfterNumberOfTimeouts)
 		if err != nil {
 			slog.Error("Error executing query 'insert into check_definitions'", "sql", sql, "err", err)
 			return err

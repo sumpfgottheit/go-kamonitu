@@ -190,6 +190,7 @@ func RunHlc(config *AppConfig) error {
 		slog.Error("Error running database migrations", "err", err)
 		return err
 	}
+
 	// Create CheckDefinitionStore
 	store, err := makeCheckDefinitionFileStore(*config)
 	if err != nil {
@@ -199,10 +200,15 @@ func RunHlc(config *AppConfig) error {
 	err = store.LoadCheckDefinitionsFromDisk()
 	slog.Info("Loaded Check Definitions", "count", len(store.CheckDefinitions))
 	if err != nil {
+		error_list := []string{}
 		if merr, ok := err.(*multierror.Error); ok {
 			for _, individualErr := range merr.Errors {
 				slog.Warn("Error in check definition - Write it as failed check into database", "error", individualErr)
+				error_list = append(error_list, individualErr.Error())
 			}
+		}
+		if len(error_list) > 0 {
+
 		}
 	}
 	if len(store.CheckDefinitions) == 0 {

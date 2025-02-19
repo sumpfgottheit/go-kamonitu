@@ -1,8 +1,10 @@
 -- migrate:up
 create table check_definitions
 (
-    filename                               text    not null PRIMARY KEY ,
+    filename                               text    not null PRIMARY KEY,
     check_command                          text    not null,
+    execute_on_failure                     text             default null,
+    execute_on_timeout                     text             default null,
     interval_seconds_between_checks        integer not null CHECK (interval_seconds_between_checks BETWEEN 5 AND 3600),
     delay_seconds_before_first_check       integer not null CHECK (delay_seconds_before_first_check BETWEEN 0 AND 600),
     timeout_seconds                        integer not null CHECK (timeout_seconds BETWEEN 1 AND 120),
@@ -12,6 +14,16 @@ create table check_definitions
 
 CREATE INDEX idx_check_definitions_filename ON check_definitions (filename);
 
+create table results
+(
+    filename text,
+    rc       integer not null check (rc BETWEEN 0 and 255),
+    text     text    not null,
+    perfdata text default null,
+    host     text default null,
+    tags     text default null,
+    foreign key (filename) references check_definitions(filename) on delete cascade on update cascade
+) strict;
 -- migrate:down
 
 drop table check_definitions;
