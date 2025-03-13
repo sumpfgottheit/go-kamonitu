@@ -18,7 +18,8 @@ create table results
 (
     filename text,
     rc       integer not null check (rc BETWEEN 0 and 255),
-    text     text    not null,
+    name     text not null,
+    text     text default null,
     perfdata text default null,
     host     text default null,
     tags     text default null,

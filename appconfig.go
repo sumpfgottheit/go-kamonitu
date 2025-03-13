@@ -47,8 +47,8 @@ var appConfigSourceMap = map[string]string{
 
 func makeAppConfig(path string) (*AppConfig, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		slog.Error("Config File nicht vorhanden", "path", path)
-		return nil, fmt.Errorf("Config File %v nicht vorhanden", path)
+		slog.Error("config file nicht vorhanden", "path", path)
+		return nil, fmt.Errorf("config file %v nicht vorhanden", path)
 	}
 
 	iniFileMap, err := readIniFile(path)

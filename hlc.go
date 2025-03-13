@@ -207,8 +207,10 @@ func RunHlc(config *AppConfig) error {
 				error_list = append(error_list, individualErr.Error())
 			}
 		}
-		if len(error_list) > 0 {
-
+		err = ReplaceKamonituResults(error_list, "LoadCheckDefinitionsFromDisk")
+		if err != nil {
+			slog.Error("Error replacing kamonitu results", "err", err)
+			return err
 		}
 	}
 	if len(store.CheckDefinitions) == 0 {

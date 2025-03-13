@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:go-kamonitu}/_working_dir/var/lib/kamonitu/kamonitu.db",
+            "name": "kamonitu"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

@@ -74,7 +74,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionDefaults(checkDefaultsFile
 		checkDefinitionDefaultsSourceMap[key] = "default-ini"
 	}
 
-	for key, _ := range hardCodedcheckDefinitionDefaultsMap {
+	for key := range hardCodedcheckDefinitionDefaultsMap {
 		if newKey, ok := checkDefinitionsDefaultMapFromFile[key]; ok {
 			checkDefinitionDefaultsMap[key] = newKey
 		}
@@ -95,7 +95,7 @@ func loadSingleCheckDefinitionFromFile(path string) (checkDefinitionContent *Che
 		sources[key] = value
 	}
 	// alles Keys die im checkdefinitionfile sind, überschreiben diese in der source map
-	for key, _ := range iniFileMap {
+	for key := range iniFileMap {
 		sources[key] = filepath.Base(path)
 	}
 	/**** Sourcen für ausgabe von show-config gemerkt ****/
@@ -144,7 +144,7 @@ func (c *CheckDefinitionFileStore) LoadCheckDefinitionsFromDisk() error {
 		}
 
 		if file.Name() == "kamonitu.ini" {
-			myerr := fmt.Errorf("Check Definition Filename %q ist nicht erlaubt", file.Name())
+			myerr := fmt.Errorf("check definition filename %q ist nicht erlaubt", file.Name())
 			slog.Error(myerr.Error())
 			errors = multierror.Append(errors, myerr)
 			continue

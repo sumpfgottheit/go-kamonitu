@@ -115,24 +115,6 @@ func isIniFile(filename string) bool {
 	return len(filename) > 4 && filename[len(filename)-4:] == ".ini"
 }
 
-// Helper function to check if a file is readable
-func isFileReadable(filename string) bool {
-	file, err := os.Open(filename)
-	if err != nil {
-		return false
-	}
-	defer file.Close()
-	return true
-}
-
-func mtimeForFile(filename string) (int64, error) {
-	fileInfo, err := os.Stat(filename)
-	if err != nil {
-		return 0, fmt.Errorf("failed to stat file %q: %v", filename, err)
-	}
-	return fileInfo.ModTime().Unix(), nil
-}
-
 func getKeys[K comparable, V any](m map[K]V) []K {
 	keys := make([]K, 0, len(m)) // Create a slice with an initial capacity
 	for k := range m {

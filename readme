@@ -12,27 +12,28 @@
 * Ein Escaping mittels \| wird nicht unterstützt
 * Das erste Zeichen einer Zeile ist '|'
 * Feld1: Returncode (0,1,2,3) - required
-* Feld2: Text - required
-* Feld3: Perfdata - optional
-* Feld4: Host - optional
-* Feld5: Tags - optional
-Die Felder 1 und zwei sind required. Perfdata, Host und Tags sind optional.
-Wird Tags benötigt, Perfdata und Host nicht, müssen diese als leere Felder geführt werden.
+* Feld2: Servicename - required
+* Feld3: Test - optional
+* Feld4: Perfdata - optional
+* Feld5: Host - optional
+* Feld6: Tags - optional
+Die Felder 1 und zwei sind required. Text, Perfdata, Host und Tags sind optional.
+Wird Tags benötigt, Perfdata und Host nicht, können diese als leere Felder geführt werden.
 
-Beispiel: |0|Swap OK - 95% free
+Beispiel: |0|Swap|Swap OK - 95% free
 
-Beispiel: |1|Filesystem /home zu 90% voll|/home=90,80,95
-Perfdata /home=90,80,95 könnte für ist, warn und crit stehen
+Beispiel: |1|Filesystem /home| /home ist zu 90% voll|/home=90,80,95
+Perfdata /home=90,80,95 können für ist, warn und crit stehen
 
-Beispiel:Beispiel: |0|Port 3 Up|port3=1554,235,334,224|myswitch.home.lab|network,homelab
-Hier wird der Switch myswitch.home.lab geprüft under Port 3 ist up - was offensichtlich OK bedeutet. Die Tags network und homelab können später verwendet werden.
-Die Perfdata können relevante Counter sein
+Beispiel:Beispiel: |0|Port 3||port3=1554,235,334,224|myswitch.home.lab|network,homelab
+Hier wird der Switch myswitch.home.lab geprüft, und der Port 3 ist OK - was auch immer das bedeutet.
+Perfdata, Host und Tags sind gesetzt, aber kein weitergehender Text.
 
 Beispiel:
-|0|Port 1 Up|port1=1554,235,334,224|myswitch.home.lab|network,homelab
-|0|Port 2 Up|port2=1554,235,334,224|myswitch.home.lab|network,homelab
-|1|Port 3 Down|port3=1554,235,334,224|myswitch.home.lab|network,homelab
-|0|Port 4 Up|port4=1554,235,334,224|myswitch.home.lab|network,homelab
+|0|Port 1|Port ist Up|port1=1554,235,334,224|myswitch.home.lab|network,homelab
+|0|Port 2|Port ist Up|port2=1554,235,334,224|myswitch.home.lab|network,homelab
+|1|Port 3|Port ist Down|port3=1554,235,334,224|myswitch.home.lab|network,homelab
+|0|Port 4|Port ist Up|port4=1554,235,334,224|myswitch.home.lab|network,homelab
 
-Ein CheckCommand gibt hier 4 einzelne Results zurück
+Ein CheckCommand gibt hier 4 einzelne Results zurück, wo jedes Feld gesetzt ist
 
